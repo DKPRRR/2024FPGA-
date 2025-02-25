@@ -1,0 +1,3683 @@
+   1              		.file	"main.c"
+   2              		.option nopic
+   3              		.text
+   4              	.Ltext0:
+   5              		.cfi_sections	.debug_frame
+   6              		.section	.text.startup.main,"ax",@progbits
+   7              		.align	1
+   8              		.globl	main
+  10              	main:
+  11              	.LFB1:
+  12              		.file 1 "../src/main.c"
+   1:../src/main.c **** #include "uart.h"
+   2:../src/main.c **** #include "gpio.h"
+   3:../src/main.c **** #include "gmt024_spi.h"
+   4:../src/main.c **** #include "osp.h"
+   5:../src/main.c **** 
+   6:../src/main.c **** 
+   7:../src/main.c **** 
+   8:../src/main.c **** #define SYSTEM_CNT_M			125										//????�统时钟单位：MHz
+   9:../src/main.c **** #define SYSTEM_CLOCK			SYSTEM_CNT_M*1000000UL
+  10:../src/main.c **** #define BAUND_9600				((SYSTEM_CLOCK)/9600)
+  11:../src/main.c **** #define BAUND_115200			(SYSTEM_CLOCK/115200)
+  12:../src/main.c **** #define GPIO_DATA				0xaa55
+  13:../src/main.c **** #define LED_DELAY				5000000UL
+  14:../src/main.c **** 
+  15:../src/main.c **** unsigned char temp_data = 0;
+  16:../src/main.c **** 
+  17:../src/main.c **** ///////////SPI��Ļ
+  18:../src/main.c **** //GPIO_OUT0--SCK   ,  GPIO_OUT1--SDA   ,  GPIO_OUT2--RES  ,   GPIO_OUT3--DC  ,  GPIO_OUT4--CS    , 
+  19:../src/main.c **** 
+  20:../src/main.c **** ///////////OSPʾ��????
+  21:../src/main.c **** //GPIO_IN0-7--FIFO_Data
+  22:../src/main.c **** //GPIO_OUT6--FIFO_Trigger
+  23:../src/main.c **** 
+  24:../src/main.c **** ///////////���͸���λ������ʾ��Ļģʽѡ��
+  25:../src/main.c **** //GPIO_OUT7--MODE0 ,  GPIO_OUT8--MODE1
+  26:../src/main.c **** //
+  27:../src/main.c **** int main(void)
+  28:../src/main.c **** {
+  13              		.loc 1 28 0
+  14              		.cfi_startproc
+  15              	.LVL0:
+  16 0000 7971     		addi	sp,sp,-48
+  17              		.cfi_def_cfa_offset 48
+  18 0002 06D6     		sw	ra,44(sp)
+  19 0004 22D4     		sw	s0,40(sp)
+  20 0006 26D2     		sw	s1,36(sp)
+  21 0008 4AD0     		sw	s2,32(sp)
+  22 000a 4ECE     		sw	s3,28(sp)
+  23 000c 52CC     		sw	s4,24(sp)
+  24              		.cfi_offset 1, -4
+  25              		.cfi_offset 8, -8
+  26              		.cfi_offset 9, -12
+  27              		.cfi_offset 18, -16
+  28              		.cfi_offset 19, -20
+  29              		.cfi_offset 20, -24
+  29:../src/main.c **** 	uint8_t clear_flag = 99;
+  30:../src/main.c **** 	IO_init();
+  31:../src/main.c **** 	SPI_SCK_0;
+  30              		.loc 1 31 0
+  31 000e A169     		li	s3,32768
+  28:../src/main.c **** 	uint8_t clear_flag = 99;
+  32              		.loc 1 28 0
+  33 0010 56CA     		sw	s5,20(sp)
+  34 0012 5AC8     		sw	s6,16(sp)
+  35 0014 5EC6     		sw	s7,12(sp)
+  36 0016 62C4     		sw	s8,8(sp)
+  37              		.cfi_offset 21, -28
+  38              		.cfi_offset 22, -32
+  39              		.cfi_offset 23, -36
+  40              		.cfi_offset 24, -40
+  30:../src/main.c **** 	SPI_SCK_0;
+  41              		.loc 1 30 0
+  42 0018 97000000 		call	IO_init
+  42      E7800000 
+  43              	.LVL1:
+  44              		.loc 1 31 0
+  45 0020 83A70902 		lw	a5,32(s3)
+  32:../src/main.c **** 	TFT_init();
+  33:../src/main.c **** 	BL_1;
+  34:../src/main.c **** 	TFT_full(WHITE);
+  46              		.loc 1 34 0
+  47 0024 4164     		li	s0,65536
+  48 0026 370C0000 		lui	s8,%hi(.L17)
+  31:../src/main.c **** 	TFT_init();
+  49              		.loc 1 31 0
+  50 002a 93F7E70F 		andi	a5,a5,254
+  51 002e 23A0F902 		sw	a5,32(s3)
+  32:../src/main.c **** 	TFT_init();
+  52              		.loc 1 32 0
+  53 0032 97000000 		call	TFT_init
+  53      E7800000 
+  54              	.LVL2:
+  33:../src/main.c **** 	TFT_full(WHITE);
+  55              		.loc 1 33 0
+  56 003a 83A70902 		lw	a5,32(s3)
+  57              		.loc 1 34 0
+  58 003e 1305F4FF 		addi	a0,s0,-1
+  59 0042 B70B0000 		lui	s7,%hi(.L24)
+  33:../src/main.c **** 	TFT_full(WHITE);
+  60              		.loc 1 33 0
+  61 0046 93E70702 		ori	a5,a5,32
+  62 004a 23A0F902 		sw	a5,32(s3)
+  63              		.loc 1 34 0
+  64 004e 97000000 		call	TFT_full
+  64      E7800000 
+  65              	.LVL3:
+  35:../src/main.c **** 
+  36:../src/main.c **** 	FIFO_CLK_0;
+  66              		.loc 1 36 0
+  67 0056 83A70902 		lw	a5,32(s3)
+  37:../src/main.c **** 	FIFO_CLK_1;
+  38:../src/main.c **** 	while(1)
+  39:../src/main.c **** 	{
+  40:../src/main.c **** 		switch(INSTRUMENT_MODE)
+  41:../src/main.c **** 		{
+  42:../src/main.c **** 			case 0://CLOSE
+  43:../src/main.c **** 				if(clear_flag != 0){
+  44:../src/main.c **** 					TFT_full(WHITE);
+  45:../src/main.c **** 					//��Яʽ�๦������
+  46:../src/main.c **** 					display_char16_16(100+16*0,212-16*0 ,RED,0);
+  47:../src/main.c **** 					display_char16_16(100+16*0,212-16*1 ,RED,1);
+  48:../src/main.c **** 					display_char16_16(100+16*0,212-16*2 ,RED,2);
+  49:../src/main.c **** 					display_char16_16(100+16*0,212-16*3 ,RED,3);
+  50:../src/main.c **** 					display_char16_16(100+16*0,212-16*4 ,RED,4);
+  51:../src/main.c **** 					display_char16_16(100+16*0,212-16*5 ,RED,5);
+  52:../src/main.c **** 					display_char16_16(100+16*0,212-16*6 ,RED,6);
+  53:../src/main.c **** 					display_char16_16(100+16*0,212-16*7 ,RED,7);
+  54:../src/main.c **** 					//ʾ�������߼������ǣ��źŷ�����
+  55:../src/main.c **** 					display_char16_16(100+16*1,260-16*0 ,RED,8 );
+  56:../src/main.c **** 					display_char16_16(100+16*1,260-16*1 ,RED,9 );
+  57:../src/main.c **** 					display_char16_16(100+16*1,260-16*2 ,RED,10);
+  58:../src/main.c **** 					display_char16_16(100+16*1,260-16*3 ,RED,23);//:
+  59:../src/main.c **** 					display_char16_16(100+16*1,260-16*4 ,RED,11);
+  60:../src/main.c **** 					display_char16_16(100+16*1,260-16*5 ,RED,12);
+  61:../src/main.c **** 					display_char16_16(100+16*1,260-16*6 ,RED,13);
+  62:../src/main.c **** 					display_char16_16(100+16*1,260-16*7 ,RED,14);
+  63:../src/main.c **** 					display_char16_16(100+16*1,260-16*8 ,RED,15);
+  64:../src/main.c **** 					display_char16_16(100+16*1,260-16*9 ,RED,23);//:
+  65:../src/main.c **** 					display_char16_16(100+16*1,260-16*10,RED,16);
+  66:../src/main.c **** 					display_char16_16(100+16*1,260-16*11,RED,17);
+  67:../src/main.c **** 					display_char16_16(100+16*1,260-16*12,RED,18);
+  68:../src/main.c **** 					display_char16_16(100+16*1,260-16*13,RED,19);
+  69:../src/main.c **** 					display_char16_16(100+16*1,260-16*14,RED,20);
+  70:../src/main.c **** 					//����һ������ģʽ�л�
+  71:../src/main.c **** 					display_char16_16(100+16*2,212-16*0 ,RED,21);
+  72:../src/main.c **** 					display_char16_16(100+16*2,212-16*1 ,RED,22);
+  73:../src/main.c **** 					display_char16_16(100+16*2,212-16*2 ,RED,26);
+  74:../src/main.c **** 					display_char16_16(100+16*2,212-16*3 ,RED,23);//:
+  75:../src/main.c **** 					display_char16_16(100+16*2,212-16*4 ,RED,6 );
+  76:../src/main.c **** 					display_char16_16(100+16*2,212-16*5 ,RED,7 );
+  77:../src/main.c **** 					display_char16_16(100+16*2,212-16*6 ,RED,75);
+  78:../src/main.c **** 					display_char16_16(100+16*2,212-16*7 ,RED,76);
+  79:../src/main.c **** 					display_char16_16(100+16*2,212-16*8 ,RED,77);
+  80:../src/main.c **** 					display_char16_16(100+16*2,212-16*9 ,RED,78);
+  81:../src/main.c **** 					clear_flag = 0;
+  82:../src/main.c **** 				}
+  83:../src/main.c **** 				break;
+  84:../src/main.c **** 			case 1://OSP
+  85:../src/main.c **** 				switch(OSP_DISPLAY_MODE)
+  86:../src/main.c **** 				{
+  87:../src/main.c **** 					case 1://SCREEN
+  88:../src/main.c **** 						if(clear_flag != 1){
+  89:../src/main.c **** 							TFT_full(WHITE);
+  90:../src/main.c **** 							clear_flag = 1;
+  91:../src/main.c **** 						}
+  92:../src/main.c **** 						TFT_show(WHITE, RED);
+  93:../src/main.c **** 						break;
+  94:../src/main.c **** 					case 2://UPPER_COMPUTER
+  95:../src/main.c **** 						if(clear_flag != 2){
+  96:../src/main.c **** 							TFT_full(WHITE);
+  97:../src/main.c **** 							//OSP
+  98:../src/main.c **** 							display_char16_16(80+16*0,200-16*0 ,RED,8 );
+  99:../src/main.c **** 							display_char16_16(80+16*0,200-16*1 ,RED,9 );
+ 100:../src/main.c **** 							display_char16_16(80+16*0,200-16*2 ,RED,10);
+ 101:../src/main.c **** 							//UPPER_COMPUTER
+ 102:../src/main.c **** 							display_char16_16(80+16*1,200-16*0 ,RED,37);
+ 103:../src/main.c **** 							display_char16_16(80+16*1,200-16*1 ,RED,38);
+ 104:../src/main.c **** 							display_char16_16(80+16*1,200-16*2 ,RED,39);
+ 105:../src/main.c **** 							display_char16_16(80+16*1,200-16*3 ,RED,75);
+ 106:../src/main.c **** 							display_char16_16(80+16*1,200-16*4 ,RED,76);
+ 107:../src/main.c **** 							clear_flag = 2;
+ 108:../src/main.c **** 						}
+ 109:../src/main.c **** 
+ 110:../src/main.c **** 						break;
+ 111:../src/main.c **** 					default:
+ 112:../src/main.c **** 						if(clear_flag != 3){
+ 113:../src/main.c **** 							TFT_full(WHITE);
+ 114:../src/main.c **** 							//OSP
+ 115:../src/main.c **** 							display_char16_16(80+16*0,200-16*0 ,RED,8 );
+ 116:../src/main.c **** 							display_char16_16(80+16*0,200-16*1 ,RED,9 );
+ 117:../src/main.c **** 							display_char16_16(80+16*0,200-16*2 ,RED,10);
+ 118:../src/main.c **** 							//3
+ 119:../src/main.c **** 							display_char16_16(80+16*1,200-16*0 ,RED,21);
+ 120:../src/main.c **** 							display_char16_16(80+16*1,200-16*1 ,RED,22);
+ 121:../src/main.c **** 							display_char16_16(80+16*1,200-16*2 ,RED,27);
+ 122:../src/main.c **** 							display_char16_16(80+16*1,200-16*3 ,RED,23);//:
+ 123:../src/main.c **** 							display_char16_16(80+16*1,200-16*4 ,RED,35);
+ 124:../src/main.c **** 							display_char16_16(80+16*1,200-16*5 ,RED,36);
+ 125:../src/main.c **** 							display_char16_16(80+16*1,200-16*6 ,RED,23);//:
+ 126:../src/main.c **** 							display_char16_16(80+16*1,200-16*7 ,RED,37);
+ 127:../src/main.c **** 							display_char16_16(80+16*1,200-16*8 ,RED,38);
+ 128:../src/main.c **** 							display_char16_16(80+16*1,200-16*9 ,RED,39);
+ 129:../src/main.c **** 							//4
+ 130:../src/main.c **** 							display_char16_16(80+16*2,200-16*0 ,RED,21);
+ 131:../src/main.c **** 							display_char16_16(80+16*2,200-16*1 ,RED,22);
+ 132:../src/main.c **** 							display_char16_16(80+16*2,200-16*2 ,RED,28);
+ 133:../src/main.c **** 							display_char16_16(80+16*2,200-16*3 ,RED,23);//:
+ 134:../src/main.c **** 							display_char16_16(80+16*2,200-16*4 ,RED,40);
+ 135:../src/main.c **** 							display_char16_16(80+16*2,200-16*5 ,RED,41);
+ 136:../src/main.c **** 							//5
+ 137:../src/main.c **** 							display_char16_16(80+16*3,200-16*0 ,RED,21);
+ 138:../src/main.c **** 							display_char16_16(80+16*3,200-16*1 ,RED,22);
+ 139:../src/main.c **** 							display_char16_16(80+16*3,200-16*2 ,RED,29);
+ 140:../src/main.c **** 							display_char16_16(80+16*3,200-16*3 ,RED,23);//:
+ 141:../src/main.c **** 							display_char16_16(80+16*3,200-16*4 ,RED,42);
+ 142:../src/main.c **** 							display_char16_16(80+16*3,200-16*5 ,RED,43);
+ 143:../src/main.c **** 							clear_flag = 3;
+ 144:../src/main.c **** 						}
+ 145:../src/main.c **** 						break;
+ 146:../src/main.c **** 				}
+ 147:../src/main.c **** 				break;
+ 148:../src/main.c **** 			case 2://LOGIC
+ 149:../src/main.c **** 				switch(LOGIC_DISPLAY_MODE)
+ 150:../src/main.c **** 				{
+ 151:../src/main.c **** 					case 1://SCREEN
+ 152:../src/main.c **** 							
+ 153:../src/main.c **** 						break;
+ 154:../src/main.c **** 					case 2:
+ 155:../src/main.c **** 						//UPPER_COMPUTER
+ 156:../src/main.c **** 						if(clear_flag != 4){
+ 157:../src/main.c **** 							TFT_full(WHITE);
+ 158:../src/main.c **** 							//LOGIC
+ 159:../src/main.c **** 							display_char16_16(20+16*0,200-16*0 ,RED,11);
+ 160:../src/main.c **** 							display_char16_16(20+16*0,200-16*1 ,RED,12);
+ 161:../src/main.c **** 							display_char16_16(20+16*0,200-16*2 ,RED,13);
+ 162:../src/main.c **** 							display_char16_16(20+16*0,200-16*3 ,RED,14);
+ 163:../src/main.c **** 							display_char16_16(20+16*0,200-16*4 ,RED,15);
+ 164:../src/main.c **** 							//UPPER_COMPUTER
+ 165:../src/main.c **** 							display_char16_16(20+16*1,200-16*0 ,RED,37);
+ 166:../src/main.c **** 							display_char16_16(20+16*1,200-16*1 ,RED,38);
+ 167:../src/main.c **** 							display_char16_16(20+16*1,200-16*2 ,RED,39);
+ 168:../src/main.c **** 							display_char16_16(20+16*1,200-16*3 ,RED,75);
+ 169:../src/main.c **** 							display_char16_16(20+16*1,200-16*4 ,RED,76);
+ 170:../src/main.c **** 							//4
+ 171:../src/main.c **** 							display_char16_16(20+16*2,200-16*0 ,RED,21);
+ 172:../src/main.c **** 							display_char16_16(20+16*2,200-16*1 ,RED,22);
+ 173:../src/main.c **** 							display_char16_16(20+16*2,200-16*2 ,RED,28);
+ 174:../src/main.c **** 							display_char16_16(20+16*2,200-16*3 ,RED,23);//:
+ 175:../src/main.c **** 							display_char16_16(20+16*2,200-16*4 ,RED,44);
+ 176:../src/main.c **** 							display_char16_16(20+16*2,200-16*5 ,RED,45);
+ 177:../src/main.c **** 							display_char16_16(20+16*2,200-16*6 ,RED,75);
+ 178:../src/main.c **** 							display_char16_16(20+16*2,200-16*7 ,RED,76);
+ 179:../src/main.c **** 							display_char16_16(20+16*2,200-16*8 ,RED,77);
+ 180:../src/main.c **** 							display_char16_16(20+16*2,200-16*9 ,RED,78);
+ 181:../src/main.c **** 							
+ 182:../src/main.c **** 							//5
+ 183:../src/main.c **** 							display_char16_16(20+16*4,200-16*0 ,RED,21);
+ 184:../src/main.c **** 							display_char16_16(20+16*4,200-16*1 ,RED,22);
+ 185:../src/main.c **** 							display_char16_16(20+16*4,200-16*2 ,RED,29);
+ 186:../src/main.c **** 							display_char16_16(20+16*4,200-16*3 ,RED,23);//:
+ 187:../src/main.c **** 							display_char16_16(20+16*4,200-16*4 ,RED,44);
+ 188:../src/main.c **** 							display_char16_16(20+16*4,200-16*5 ,RED,45);
+ 189:../src/main.c **** 							display_char16_16(20+16*4,200-16*6 ,RED,55);
+ 190:../src/main.c **** 							display_char16_16(20+16*4,200-16*7 ,RED,56);
+ 191:../src/main.c **** 							display_char16_16(20+16*4,200-16*8 ,RED,77);
+ 192:../src/main.c **** 							display_char16_16(20+16*4,200-16*9 ,RED,78);
+ 193:../src/main.c **** 							
+ 194:../src/main.c **** 							//6
+ 195:../src/main.c **** 							display_char16_16(20+16*6,200-16*0 ,RED,21);
+ 196:../src/main.c **** 							display_char16_16(20+16*6,200-16*1 ,RED,22);
+ 197:../src/main.c **** 							display_char16_16(20+16*6,200-16*2 ,RED,30);
+ 198:../src/main.c **** 							display_char16_16(20+16*6,200-16*3 ,RED,23);//:
+ 199:../src/main.c **** 							display_char16_16(20+16*6,200-16*4 ,RED,57);
+ 200:../src/main.c **** 							display_char16_16(20+16*6,200-16*5 ,RED,58);
+ 201:../src/main.c **** 							display_char16_16(20+16*6,200-16*6 ,RED,59);
+ 202:../src/main.c **** 							display_char16_16(20+16*6,200-16*7 ,RED,60);
+ 203:../src/main.c **** 							display_char16_16(20+16*6,200-16*8 ,RED,44);
+ 204:../src/main.c **** 							display_char16_16(20+16*6,200-16*9 ,RED,45);
+ 205:../src/main.c **** 							clear_flag = 4;
+ 206:../src/main.c **** 						}
+ 207:../src/main.c **** 						//NOW_MODE
+ 208:../src/main.c **** 							display_char16_16(20+16*3,250-16*0 ,RED,82);
+ 209:../src/main.c **** 							display_char16_16(20+16*3,250-16*1 ,RED,83);
+ 210:../src/main.c **** 							display_char16_16(20+16*3,250-16*2 ,RED,23);//:
+ 211:../src/main.c **** 							switch(LOGIC_TRIGGER_MODE)
+ 212:../src/main.c **** 							{
+ 213:../src/main.c **** 								case 0:
+ 214:../src/main.c **** 									display_char16_16(20+16*3,250-16*3 ,RED,47);
+ 215:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,48);
+ 216:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,49);
+ 217:../src/main.c **** 									break;
+ 218:../src/main.c **** 								case 1:
+ 219:../src/main.c **** 									display_char16_16(20+16*3,250-16*3 ,RED,46);
+ 220:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,48);
+ 221:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,49);
+ 222:../src/main.c **** 									break;
+ 223:../src/main.c **** 								case 2:
+ 224:../src/main.c **** 									display_char16_16(20+16*3,250-16*3 ,RED,50);
+ 225:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,51);
+ 226:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,54);
+ 227:../src/main.c **** 									break;
+ 228:../src/main.c **** 								case 3:
+ 229:../src/main.c **** 									display_char16_16(20+16*3,250-16*3 ,RED,52);
+ 230:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,53);
+ 231:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,54);
+ 232:../src/main.c **** 									break;
+ 233:../src/main.c **** 								case 4:
+ 234:../src/main.c **** 									display_char16_16(20+16*3,250-16*3 ,RED,50);
+ 235:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,52);
+ 236:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,54);
+ 237:../src/main.c **** 									break;
+ 238:../src/main.c **** 								case 5:
+ 239:../src/main.c **** 									display_char16_16(20+16*3,250-16*3 ,RED,80);
+ 240:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,81);
+ 241:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,44);
+ 242:../src/main.c **** 									break;
+ 243:../src/main.c **** 							}
+ 244:../src/main.c **** 							//NOW_CHANNEL
+ 245:../src/main.c **** 							display_char16_16(20+16*5,250-16*0 ,RED,82);
+ 246:../src/main.c **** 							display_char16_16(20+16*5,250-16*1 ,RED,83);
+ 247:../src/main.c **** 							display_char16_16(20+16*5,250-16*2 ,RED,23);//:
+ 248:../src/main.c **** 							switch(LOGIC_TRIGGER_CHANNEL)
+ 249:../src/main.c **** 							{
+ 250:../src/main.c **** 								case 0:
+ 251:../src/main.c **** 									display_char16_16(20+16*5,250-16*3 ,RED,55);
+ 252:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 253:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,25);
+ 254:../src/main.c **** 									break;
+ 255:../src/main.c **** 								case 1:
+ 256:../src/main.c **** 									display_char16_16(20+16*5,250-16*3 ,RED,55);
+ 257:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 258:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,26);
+ 259:../src/main.c **** 									break;
+ 260:../src/main.c **** 								case 2:
+ 261:../src/main.c **** 									display_char16_16(20+16*5,250-16*3 ,RED,55);
+ 262:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 263:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,27);
+ 264:../src/main.c **** 									break;
+ 265:../src/main.c **** 								case 3:
+ 266:../src/main.c **** 									display_char16_16(20+16*5,250-16*3 ,RED,55);
+ 267:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 268:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,28);
+ 269:../src/main.c **** 									break;
+ 270:../src/main.c **** 								case 4:
+ 271:../src/main.c **** 									display_char16_16(20+16*5,250-16*3 ,RED,55);
+ 272:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 273:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,29);
+ 274:../src/main.c **** 									break;
+ 275:../src/main.c **** 								case 5:
+ 276:../src/main.c **** 									display_char16_16(20+16*5,250-16*3 ,RED,55);
+ 277:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 278:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,30);
+ 279:../src/main.c **** 									break;
+ 280:../src/main.c **** 								case 6:
+ 281:../src/main.c **** 									display_char16_16(20+16*5,250-16*3 ,RED,55);
+ 282:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 283:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,31);
+ 284:../src/main.c **** 									break;
+ 285:../src/main.c **** 								case 7:
+ 286:../src/main.c **** 									display_char16_16(20+16*5,250-16*3 ,RED,55);
+ 287:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 288:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,32);
+ 289:../src/main.c **** 									break;
+ 290:../src/main.c **** 							}
+ 291:../src/main.c **** 						break;
+ 292:../src/main.c **** 					default:
+ 293:../src/main.c **** 						if(clear_flag != 5){
+ 294:../src/main.c **** 							TFT_full(WHITE);
+  68              		.loc 1 294 0
+  69 005a 130AF4FF 		addi	s4,s0,-1
+  40:../src/main.c **** 		{
+  70              		.loc 1 40 0
+  71 005e A164     		li	s1,32768
+  36:../src/main.c **** 	FIFO_CLK_1;
+  72              		.loc 1 36 0
+  73 0060 93F7F70B 		andi	a5,a5,191
+  74 0064 23A0F902 		sw	a5,32(s3)
+  37:../src/main.c **** 	FIFO_CLK_1;
+  75              		.loc 1 37 0
+  76 0068 83A70902 		lw	a5,32(s3)
+  40:../src/main.c **** 		{
+  77              		.loc 1 40 0
+  78 006c 0949     		li	s2,2
+  29:../src/main.c **** 	IO_init();
+  79              		.loc 1 29 0
+  80 006e 93063006 		li	a3,99
+  37:../src/main.c **** 	while(1)
+  81              		.loc 1 37 0
+  82 0072 93E70704 		ori	a5,a5,64
+  83 0076 23A0F902 		sw	a5,32(s3)
+  84 007a 130C0C00 		addi	s8,s8,%lo(.L17)
+  85 007e 938B0B00 		addi	s7,s7,%lo(.L24)
+ 149:../src/main.c **** 				{
+  86              		.loc 1 149 0
+  87 0082 8549     		li	s3,1
+ 293:../src/main.c **** 							TFT_full(WHITE);
+  88              		.loc 1 293 0
+  89 0084 954A     		li	s5,5
+ 295:../src/main.c **** 							//LOGIC
+ 296:../src/main.c **** 							display_char16_16(20+16*0,200-16*0 ,RED,11);
+  90              		.loc 1 296 0
+  91 0086 13040480 		addi	s0,s0,-2048
+ 156:../src/main.c **** 							TFT_full(WHITE);
+  92              		.loc 1 156 0
+  93 008a 114B     		li	s6,4
+  94              	.LVL4:
+  95              	.L2:
+  40:../src/main.c **** 		{
+  96              		.loc 1 40 0
+  97 008c BC48     		lw	a5,80(s1)
+  98 008e 8D8B     		andi	a5,a5,3
+  99 0090 6380272D 		beq	a5,s2,.L5
+ 100              	.L43:
+ 101 0094 0D47     		li	a4,3
+ 102 0096 638BE772 		beq	a5,a4,.L6
+ 103 009a 63843767 		beq	a5,s3,.L7
+  43:../src/main.c **** 					TFT_full(WHITE);
+ 104              		.loc 1 43 0
+ 105 009e FDD6     		beqz	a3,.L2
+  44:../src/main.c **** 					//��Яʽ�๦������
+ 106              		.loc 1 44 0
+ 107 00a0 5285     		mv	a0,s4
+ 108 00a2 97000000 		call	TFT_full
+ 108      E7800000 
+ 109              	.LVL5:
+  46:../src/main.c **** 					display_char16_16(100+16*0,212-16*1 ,RED,1);
+ 110              		.loc 1 46 0
+ 111 00aa 8146     		li	a3,0
+ 112 00ac 2286     		mv	a2,s0
+ 113 00ae 9305400D 		li	a1,212
+ 114 00b2 13054006 		li	a0,100
+ 115 00b6 97000000 		call	display_char16_16
+ 115      E7800000 
+ 116              	.LVL6:
+  47:../src/main.c **** 					display_char16_16(100+16*0,212-16*2 ,RED,2);
+ 117              		.loc 1 47 0
+ 118 00be 8546     		li	a3,1
+ 119 00c0 2286     		mv	a2,s0
+ 120 00c2 9305400C 		li	a1,196
+ 121 00c6 13054006 		li	a0,100
+ 122 00ca 97000000 		call	display_char16_16
+ 122      E7800000 
+ 123              	.LVL7:
+  48:../src/main.c **** 					display_char16_16(100+16*0,212-16*3 ,RED,3);
+ 124              		.loc 1 48 0
+ 125 00d2 8946     		li	a3,2
+ 126 00d4 2286     		mv	a2,s0
+ 127 00d6 9305400B 		li	a1,180
+ 128 00da 13054006 		li	a0,100
+ 129 00de 97000000 		call	display_char16_16
+ 129      E7800000 
+ 130              	.LVL8:
+  49:../src/main.c **** 					display_char16_16(100+16*0,212-16*4 ,RED,4);
+ 131              		.loc 1 49 0
+ 132 00e6 8D46     		li	a3,3
+ 133 00e8 2286     		mv	a2,s0
+ 134 00ea 9305400A 		li	a1,164
+ 135 00ee 13054006 		li	a0,100
+ 136 00f2 97000000 		call	display_char16_16
+ 136      E7800000 
+ 137              	.LVL9:
+  50:../src/main.c **** 					display_char16_16(100+16*0,212-16*5 ,RED,5);
+ 138              		.loc 1 50 0
+ 139 00fa 9146     		li	a3,4
+ 140 00fc 2286     		mv	a2,s0
+ 141 00fe 93054009 		li	a1,148
+ 142 0102 13054006 		li	a0,100
+ 143 0106 97000000 		call	display_char16_16
+ 143      E7800000 
+ 144              	.LVL10:
+  51:../src/main.c **** 					display_char16_16(100+16*0,212-16*6 ,RED,6);
+ 145              		.loc 1 51 0
+ 146 010e 9546     		li	a3,5
+ 147 0110 2286     		mv	a2,s0
+ 148 0112 93054008 		li	a1,132
+ 149 0116 13054006 		li	a0,100
+ 150 011a 97000000 		call	display_char16_16
+ 150      E7800000 
+ 151              	.LVL11:
+  52:../src/main.c **** 					display_char16_16(100+16*0,212-16*7 ,RED,7);
+ 152              		.loc 1 52 0
+ 153 0122 9946     		li	a3,6
+ 154 0124 2286     		mv	a2,s0
+ 155 0126 93054007 		li	a1,116
+ 156 012a 13054006 		li	a0,100
+ 157 012e 97000000 		call	display_char16_16
+ 157      E7800000 
+ 158              	.LVL12:
+  53:../src/main.c **** 					//ʾ�������߼������ǣ��źŷ�����
+ 159              		.loc 1 53 0
+ 160 0136 9D46     		li	a3,7
+ 161 0138 2286     		mv	a2,s0
+ 162 013a 93054006 		li	a1,100
+ 163 013e 13054006 		li	a0,100
+ 164 0142 97000000 		call	display_char16_16
+ 164      E7800000 
+ 165              	.LVL13:
+  55:../src/main.c **** 					display_char16_16(100+16*1,260-16*1 ,RED,9 );
+ 166              		.loc 1 55 0
+ 167 014a A146     		li	a3,8
+ 168 014c 2286     		mv	a2,s0
+ 169 014e 93054010 		li	a1,260
+ 170 0152 13054007 		li	a0,116
+ 171 0156 97000000 		call	display_char16_16
+ 171      E7800000 
+ 172              	.LVL14:
+  56:../src/main.c **** 					display_char16_16(100+16*1,260-16*2 ,RED,10);
+ 173              		.loc 1 56 0
+ 174 015e A546     		li	a3,9
+ 175 0160 2286     		mv	a2,s0
+ 176 0162 9305400F 		li	a1,244
+ 177 0166 13054007 		li	a0,116
+ 178 016a 97000000 		call	display_char16_16
+ 178      E7800000 
+ 179              	.LVL15:
+  57:../src/main.c **** 					display_char16_16(100+16*1,260-16*3 ,RED,23);//:
+ 180              		.loc 1 57 0
+ 181 0172 A946     		li	a3,10
+ 182 0174 2286     		mv	a2,s0
+ 183 0176 9305400E 		li	a1,228
+ 184 017a 13054007 		li	a0,116
+ 185 017e 97000000 		call	display_char16_16
+ 185      E7800000 
+ 186              	.LVL16:
+  58:../src/main.c **** 					display_char16_16(100+16*1,260-16*4 ,RED,11);
+ 187              		.loc 1 58 0
+ 188 0186 DD46     		li	a3,23
+ 189 0188 2286     		mv	a2,s0
+ 190 018a 9305400D 		li	a1,212
+ 191 018e 13054007 		li	a0,116
+ 192 0192 97000000 		call	display_char16_16
+ 192      E7800000 
+ 193              	.LVL17:
+  59:../src/main.c **** 					display_char16_16(100+16*1,260-16*5 ,RED,12);
+ 194              		.loc 1 59 0
+ 195 019a AD46     		li	a3,11
+ 196 019c 2286     		mv	a2,s0
+ 197 019e 9305400C 		li	a1,196
+ 198 01a2 13054007 		li	a0,116
+ 199 01a6 97000000 		call	display_char16_16
+ 199      E7800000 
+ 200              	.LVL18:
+  60:../src/main.c **** 					display_char16_16(100+16*1,260-16*6 ,RED,13);
+ 201              		.loc 1 60 0
+ 202 01ae B146     		li	a3,12
+ 203 01b0 2286     		mv	a2,s0
+ 204 01b2 9305400B 		li	a1,180
+ 205 01b6 13054007 		li	a0,116
+ 206 01ba 97000000 		call	display_char16_16
+ 206      E7800000 
+ 207              	.LVL19:
+  61:../src/main.c **** 					display_char16_16(100+16*1,260-16*7 ,RED,14);
+ 208              		.loc 1 61 0
+ 209 01c2 B546     		li	a3,13
+ 210 01c4 2286     		mv	a2,s0
+ 211 01c6 9305400A 		li	a1,164
+ 212 01ca 13054007 		li	a0,116
+ 213 01ce 97000000 		call	display_char16_16
+ 213      E7800000 
+ 214              	.LVL20:
+  62:../src/main.c **** 					display_char16_16(100+16*1,260-16*8 ,RED,15);
+ 215              		.loc 1 62 0
+ 216 01d6 B946     		li	a3,14
+ 217 01d8 2286     		mv	a2,s0
+ 218 01da 93054009 		li	a1,148
+ 219 01de 13054007 		li	a0,116
+ 220 01e2 97000000 		call	display_char16_16
+ 220      E7800000 
+ 221              	.LVL21:
+  63:../src/main.c **** 					display_char16_16(100+16*1,260-16*9 ,RED,23);//:
+ 222              		.loc 1 63 0
+ 223 01ea BD46     		li	a3,15
+ 224 01ec 2286     		mv	a2,s0
+ 225 01ee 93054008 		li	a1,132
+ 226 01f2 13054007 		li	a0,116
+ 227 01f6 97000000 		call	display_char16_16
+ 227      E7800000 
+ 228              	.LVL22:
+  64:../src/main.c **** 					display_char16_16(100+16*1,260-16*10,RED,16);
+ 229              		.loc 1 64 0
+ 230 01fe DD46     		li	a3,23
+ 231 0200 2286     		mv	a2,s0
+ 232 0202 93054007 		li	a1,116
+ 233 0206 13054007 		li	a0,116
+ 234 020a 97000000 		call	display_char16_16
+ 234      E7800000 
+ 235              	.LVL23:
+  65:../src/main.c **** 					display_char16_16(100+16*1,260-16*11,RED,17);
+ 236              		.loc 1 65 0
+ 237 0212 C146     		li	a3,16
+ 238 0214 2286     		mv	a2,s0
+ 239 0216 93054006 		li	a1,100
+ 240 021a 13054007 		li	a0,116
+ 241 021e 97000000 		call	display_char16_16
+ 241      E7800000 
+ 242              	.LVL24:
+  66:../src/main.c **** 					display_char16_16(100+16*1,260-16*12,RED,18);
+ 243              		.loc 1 66 0
+ 244 0226 C546     		li	a3,17
+ 245 0228 2286     		mv	a2,s0
+ 246 022a 93054005 		li	a1,84
+ 247 022e 13054007 		li	a0,116
+ 248 0232 97000000 		call	display_char16_16
+ 248      E7800000 
+ 249              	.LVL25:
+  67:../src/main.c **** 					display_char16_16(100+16*1,260-16*13,RED,19);
+ 250              		.loc 1 67 0
+ 251 023a C946     		li	a3,18
+ 252 023c 2286     		mv	a2,s0
+ 253 023e 93054004 		li	a1,68
+ 254 0242 13054007 		li	a0,116
+ 255 0246 97000000 		call	display_char16_16
+ 255      E7800000 
+ 256              	.LVL26:
+  68:../src/main.c **** 					display_char16_16(100+16*1,260-16*14,RED,20);
+ 257              		.loc 1 68 0
+ 258 024e CD46     		li	a3,19
+ 259 0250 2286     		mv	a2,s0
+ 260 0252 93054003 		li	a1,52
+ 261 0256 13054007 		li	a0,116
+ 262 025a 97000000 		call	display_char16_16
+ 262      E7800000 
+ 263              	.LVL27:
+  69:../src/main.c **** 					//����һ������ģʽ�л�
+ 264              		.loc 1 69 0
+ 265 0262 D146     		li	a3,20
+ 266 0264 2286     		mv	a2,s0
+ 267 0266 93054002 		li	a1,36
+ 268 026a 13054007 		li	a0,116
+ 269 026e 97000000 		call	display_char16_16
+ 269      E7800000 
+ 270              	.LVL28:
+  71:../src/main.c **** 					display_char16_16(100+16*2,212-16*1 ,RED,22);
+ 271              		.loc 1 71 0
+ 272 0276 D546     		li	a3,21
+ 273 0278 2286     		mv	a2,s0
+ 274 027a 9305400D 		li	a1,212
+ 275 027e 13054008 		li	a0,132
+ 276 0282 97000000 		call	display_char16_16
+ 276      E7800000 
+ 277              	.LVL29:
+  72:../src/main.c **** 					display_char16_16(100+16*2,212-16*2 ,RED,26);
+ 278              		.loc 1 72 0
+ 279 028a D946     		li	a3,22
+ 280 028c 2286     		mv	a2,s0
+ 281 028e 9305400C 		li	a1,196
+ 282 0292 13054008 		li	a0,132
+ 283 0296 97000000 		call	display_char16_16
+ 283      E7800000 
+ 284              	.LVL30:
+  73:../src/main.c **** 					display_char16_16(100+16*2,212-16*3 ,RED,23);//:
+ 285              		.loc 1 73 0
+ 286 029e E946     		li	a3,26
+ 287 02a0 2286     		mv	a2,s0
+ 288 02a2 9305400B 		li	a1,180
+ 289 02a6 13054008 		li	a0,132
+ 290 02aa 97000000 		call	display_char16_16
+ 290      E7800000 
+ 291              	.LVL31:
+  74:../src/main.c **** 					display_char16_16(100+16*2,212-16*4 ,RED,6 );
+ 292              		.loc 1 74 0
+ 293 02b2 DD46     		li	a3,23
+ 294 02b4 2286     		mv	a2,s0
+ 295 02b6 9305400A 		li	a1,164
+ 296 02ba 13054008 		li	a0,132
+ 297 02be 97000000 		call	display_char16_16
+ 297      E7800000 
+ 298              	.LVL32:
+  75:../src/main.c **** 					display_char16_16(100+16*2,212-16*5 ,RED,7 );
+ 299              		.loc 1 75 0
+ 300 02c6 9946     		li	a3,6
+ 301 02c8 2286     		mv	a2,s0
+ 302 02ca 93054009 		li	a1,148
+ 303 02ce 13054008 		li	a0,132
+ 304 02d2 97000000 		call	display_char16_16
+ 304      E7800000 
+ 305              	.LVL33:
+  76:../src/main.c **** 					display_char16_16(100+16*2,212-16*6 ,RED,75);
+ 306              		.loc 1 76 0
+ 307 02da 9D46     		li	a3,7
+ 308 02dc 2286     		mv	a2,s0
+ 309 02de 93054008 		li	a1,132
+ 310 02e2 13054008 		li	a0,132
+ 311 02e6 97000000 		call	display_char16_16
+ 311      E7800000 
+ 312              	.LVL34:
+  77:../src/main.c **** 					display_char16_16(100+16*2,212-16*7 ,RED,76);
+ 313              		.loc 1 77 0
+ 314 02ee 9306B004 		li	a3,75
+ 315 02f2 2286     		mv	a2,s0
+ 316 02f4 93054007 		li	a1,116
+ 317 02f8 13054008 		li	a0,132
+ 318 02fc 97000000 		call	display_char16_16
+ 318      E7800000 
+ 319              	.LVL35:
+  78:../src/main.c **** 					display_char16_16(100+16*2,212-16*8 ,RED,77);
+ 320              		.loc 1 78 0
+ 321 0304 9306C004 		li	a3,76
+ 322 0308 2286     		mv	a2,s0
+ 323 030a 93054006 		li	a1,100
+ 324 030e 13054008 		li	a0,132
+ 325 0312 97000000 		call	display_char16_16
+ 325      E7800000 
+ 326              	.LVL36:
+  79:../src/main.c **** 					display_char16_16(100+16*2,212-16*9 ,RED,78);
+ 327              		.loc 1 79 0
+ 328 031a 9306D004 		li	a3,77
+ 329 031e 2286     		mv	a2,s0
+ 330 0320 93054005 		li	a1,84
+ 331 0324 13054008 		li	a0,132
+ 332 0328 97000000 		call	display_char16_16
+ 332      E7800000 
+ 333              	.LVL37:
+  80:../src/main.c **** 					clear_flag = 0;
+ 334              		.loc 1 80 0
+ 335 0330 9306E004 		li	a3,78
+ 336 0334 2286     		mv	a2,s0
+ 337 0336 93054004 		li	a1,68
+ 338 033a 13054008 		li	a0,132
+ 339 033e 97000000 		call	display_char16_16
+ 339      E7800000 
+ 340              	.LVL38:
+  40:../src/main.c **** 		{
+ 341              		.loc 1 40 0
+ 342 0346 BC48     		lw	a5,80(s1)
+  81:../src/main.c **** 				}
+ 343              		.loc 1 81 0
+ 344 0348 8146     		li	a3,0
+ 345              	.LVL39:
+  40:../src/main.c **** 		{
+ 346              		.loc 1 40 0
+ 347 034a 8D8B     		andi	a5,a5,3
+ 348 034c E39427D5 		bne	a5,s2,.L43
+ 349              	.L5:
+ 149:../src/main.c **** 				{
+ 350              		.loc 1 149 0
+ 351 0350 BC48     		lw	a5,80(s1)
+ 352 0352 B183     		srli	a5,a5,12
+ 353 0354 8D8B     		andi	a5,a5,3
+ 354 0356 E38B37D3 		beq	a5,s3,.L2
+ 355 035a E39E2717 		bne	a5,s2,.L37
+ 156:../src/main.c **** 							TFT_full(WHITE);
+ 356              		.loc 1 156 0
+ 357 035e 63896635 		beq	a3,s6,.L14
+ 157:../src/main.c **** 							//LOGIC
+ 358              		.loc 1 157 0
+ 359 0362 5285     		mv	a0,s4
+ 360 0364 97000000 		call	TFT_full
+ 360      E7800000 
+ 361              	.LVL40:
+ 159:../src/main.c **** 							display_char16_16(20+16*0,200-16*1 ,RED,12);
+ 362              		.loc 1 159 0
+ 363 036c AD46     		li	a3,11
+ 364 036e 2286     		mv	a2,s0
+ 365 0370 9305800C 		li	a1,200
+ 366 0374 5145     		li	a0,20
+ 367 0376 97000000 		call	display_char16_16
+ 367      E7800000 
+ 368              	.LVL41:
+ 160:../src/main.c **** 							display_char16_16(20+16*0,200-16*2 ,RED,13);
+ 369              		.loc 1 160 0
+ 370 037e B146     		li	a3,12
+ 371 0380 2286     		mv	a2,s0
+ 372 0382 9305800B 		li	a1,184
+ 373 0386 5145     		li	a0,20
+ 374 0388 97000000 		call	display_char16_16
+ 374      E7800000 
+ 375              	.LVL42:
+ 161:../src/main.c **** 							display_char16_16(20+16*0,200-16*3 ,RED,14);
+ 376              		.loc 1 161 0
+ 377 0390 B546     		li	a3,13
+ 378 0392 2286     		mv	a2,s0
+ 379 0394 9305800A 		li	a1,168
+ 380 0398 5145     		li	a0,20
+ 381 039a 97000000 		call	display_char16_16
+ 381      E7800000 
+ 382              	.LVL43:
+ 162:../src/main.c **** 							display_char16_16(20+16*0,200-16*4 ,RED,15);
+ 383              		.loc 1 162 0
+ 384 03a2 B946     		li	a3,14
+ 385 03a4 2286     		mv	a2,s0
+ 386 03a6 93058009 		li	a1,152
+ 387 03aa 5145     		li	a0,20
+ 388 03ac 97000000 		call	display_char16_16
+ 388      E7800000 
+ 389              	.LVL44:
+ 163:../src/main.c **** 							//UPPER_COMPUTER
+ 390              		.loc 1 163 0
+ 391 03b4 BD46     		li	a3,15
+ 392 03b6 2286     		mv	a2,s0
+ 393 03b8 93058008 		li	a1,136
+ 394 03bc 5145     		li	a0,20
+ 395 03be 97000000 		call	display_char16_16
+ 395      E7800000 
+ 396              	.LVL45:
+ 165:../src/main.c **** 							display_char16_16(20+16*1,200-16*1 ,RED,38);
+ 397              		.loc 1 165 0
+ 398 03c6 93065002 		li	a3,37
+ 399 03ca 2286     		mv	a2,s0
+ 400 03cc 9305800C 		li	a1,200
+ 401 03d0 13054002 		li	a0,36
+ 402 03d4 97000000 		call	display_char16_16
+ 402      E7800000 
+ 403              	.LVL46:
+ 166:../src/main.c **** 							display_char16_16(20+16*1,200-16*2 ,RED,39);
+ 404              		.loc 1 166 0
+ 405 03dc 93066002 		li	a3,38
+ 406 03e0 2286     		mv	a2,s0
+ 407 03e2 9305800B 		li	a1,184
+ 408 03e6 13054002 		li	a0,36
+ 409 03ea 97000000 		call	display_char16_16
+ 409      E7800000 
+ 410              	.LVL47:
+ 167:../src/main.c **** 							display_char16_16(20+16*1,200-16*3 ,RED,75);
+ 411              		.loc 1 167 0
+ 412 03f2 93067002 		li	a3,39
+ 413 03f6 2286     		mv	a2,s0
+ 414 03f8 9305800A 		li	a1,168
+ 415 03fc 13054002 		li	a0,36
+ 416 0400 97000000 		call	display_char16_16
+ 416      E7800000 
+ 417              	.LVL48:
+ 168:../src/main.c **** 							display_char16_16(20+16*1,200-16*4 ,RED,76);
+ 418              		.loc 1 168 0
+ 419 0408 9306B004 		li	a3,75
+ 420 040c 2286     		mv	a2,s0
+ 421 040e 93058009 		li	a1,152
+ 422 0412 13054002 		li	a0,36
+ 423 0416 97000000 		call	display_char16_16
+ 423      E7800000 
+ 424              	.LVL49:
+ 169:../src/main.c **** 							//4
+ 425              		.loc 1 169 0
+ 426 041e 9306C004 		li	a3,76
+ 427 0422 2286     		mv	a2,s0
+ 428 0424 93058008 		li	a1,136
+ 429 0428 13054002 		li	a0,36
+ 430 042c 97000000 		call	display_char16_16
+ 430      E7800000 
+ 431              	.LVL50:
+ 171:../src/main.c **** 							display_char16_16(20+16*2,200-16*1 ,RED,22);
+ 432              		.loc 1 171 0
+ 433 0434 D546     		li	a3,21
+ 434 0436 2286     		mv	a2,s0
+ 435 0438 9305800C 		li	a1,200
+ 436 043c 13054003 		li	a0,52
+ 437 0440 97000000 		call	display_char16_16
+ 437      E7800000 
+ 438              	.LVL51:
+ 172:../src/main.c **** 							display_char16_16(20+16*2,200-16*2 ,RED,28);
+ 439              		.loc 1 172 0
+ 440 0448 D946     		li	a3,22
+ 441 044a 2286     		mv	a2,s0
+ 442 044c 9305800B 		li	a1,184
+ 443 0450 13054003 		li	a0,52
+ 444 0454 97000000 		call	display_char16_16
+ 444      E7800000 
+ 445              	.LVL52:
+ 173:../src/main.c **** 							display_char16_16(20+16*2,200-16*3 ,RED,23);//:
+ 446              		.loc 1 173 0
+ 447 045c F146     		li	a3,28
+ 448 045e 2286     		mv	a2,s0
+ 449 0460 9305800A 		li	a1,168
+ 450 0464 13054003 		li	a0,52
+ 451 0468 97000000 		call	display_char16_16
+ 451      E7800000 
+ 452              	.LVL53:
+ 174:../src/main.c **** 							display_char16_16(20+16*2,200-16*4 ,RED,44);
+ 453              		.loc 1 174 0
+ 454 0470 DD46     		li	a3,23
+ 455 0472 2286     		mv	a2,s0
+ 456 0474 93058009 		li	a1,152
+ 457 0478 13054003 		li	a0,52
+ 458 047c 97000000 		call	display_char16_16
+ 458      E7800000 
+ 459              	.LVL54:
+ 175:../src/main.c **** 							display_char16_16(20+16*2,200-16*5 ,RED,45);
+ 460              		.loc 1 175 0
+ 461 0484 9306C002 		li	a3,44
+ 462 0488 2286     		mv	a2,s0
+ 463 048a 93058008 		li	a1,136
+ 464 048e 13054003 		li	a0,52
+ 465 0492 97000000 		call	display_char16_16
+ 465      E7800000 
+ 466              	.LVL55:
+ 176:../src/main.c **** 							display_char16_16(20+16*2,200-16*6 ,RED,75);
+ 467              		.loc 1 176 0
+ 468 049a 9306D002 		li	a3,45
+ 469 049e 2286     		mv	a2,s0
+ 470 04a0 93058007 		li	a1,120
+ 471 04a4 13054003 		li	a0,52
+ 472 04a8 97000000 		call	display_char16_16
+ 472      E7800000 
+ 473              	.LVL56:
+ 177:../src/main.c **** 							display_char16_16(20+16*2,200-16*7 ,RED,76);
+ 474              		.loc 1 177 0
+ 475 04b0 9306B004 		li	a3,75
+ 476 04b4 2286     		mv	a2,s0
+ 477 04b6 93058006 		li	a1,104
+ 478 04ba 13054003 		li	a0,52
+ 479 04be 97000000 		call	display_char16_16
+ 479      E7800000 
+ 480              	.LVL57:
+ 178:../src/main.c **** 							display_char16_16(20+16*2,200-16*8 ,RED,77);
+ 481              		.loc 1 178 0
+ 482 04c6 9306C004 		li	a3,76
+ 483 04ca 2286     		mv	a2,s0
+ 484 04cc 93058005 		li	a1,88
+ 485 04d0 13054003 		li	a0,52
+ 486 04d4 97000000 		call	display_char16_16
+ 486      E7800000 
+ 487              	.LVL58:
+ 179:../src/main.c **** 							display_char16_16(20+16*2,200-16*9 ,RED,78);
+ 488              		.loc 1 179 0
+ 489 04dc 9306D004 		li	a3,77
+ 490 04e0 2286     		mv	a2,s0
+ 491 04e2 93058004 		li	a1,72
+ 492 04e6 13054003 		li	a0,52
+ 493 04ea 97000000 		call	display_char16_16
+ 493      E7800000 
+ 494              	.LVL59:
+ 180:../src/main.c **** 							
+ 495              		.loc 1 180 0
+ 496 04f2 9306E004 		li	a3,78
+ 497 04f6 2286     		mv	a2,s0
+ 498 04f8 93058003 		li	a1,56
+ 499 04fc 13054003 		li	a0,52
+ 500 0500 97000000 		call	display_char16_16
+ 500      E7800000 
+ 501              	.LVL60:
+ 183:../src/main.c **** 							display_char16_16(20+16*4,200-16*1 ,RED,22);
+ 502              		.loc 1 183 0
+ 503 0508 D546     		li	a3,21
+ 504 050a 2286     		mv	a2,s0
+ 505 050c 9305800C 		li	a1,200
+ 506 0510 13054005 		li	a0,84
+ 507 0514 97000000 		call	display_char16_16
+ 507      E7800000 
+ 508              	.LVL61:
+ 184:../src/main.c **** 							display_char16_16(20+16*4,200-16*2 ,RED,29);
+ 509              		.loc 1 184 0
+ 510 051c D946     		li	a3,22
+ 511 051e 2286     		mv	a2,s0
+ 512 0520 9305800B 		li	a1,184
+ 513 0524 13054005 		li	a0,84
+ 514 0528 97000000 		call	display_char16_16
+ 514      E7800000 
+ 515              	.LVL62:
+ 185:../src/main.c **** 							display_char16_16(20+16*4,200-16*3 ,RED,23);//:
+ 516              		.loc 1 185 0
+ 517 0530 F546     		li	a3,29
+ 518 0532 2286     		mv	a2,s0
+ 519 0534 9305800A 		li	a1,168
+ 520 0538 13054005 		li	a0,84
+ 521 053c 97000000 		call	display_char16_16
+ 521      E7800000 
+ 522              	.LVL63:
+ 186:../src/main.c **** 							display_char16_16(20+16*4,200-16*4 ,RED,44);
+ 523              		.loc 1 186 0
+ 524 0544 DD46     		li	a3,23
+ 525 0546 2286     		mv	a2,s0
+ 526 0548 93058009 		li	a1,152
+ 527 054c 13054005 		li	a0,84
+ 528 0550 97000000 		call	display_char16_16
+ 528      E7800000 
+ 529              	.LVL64:
+ 187:../src/main.c **** 							display_char16_16(20+16*4,200-16*5 ,RED,45);
+ 530              		.loc 1 187 0
+ 531 0558 9306C002 		li	a3,44
+ 532 055c 2286     		mv	a2,s0
+ 533 055e 93058008 		li	a1,136
+ 534 0562 13054005 		li	a0,84
+ 535 0566 97000000 		call	display_char16_16
+ 535      E7800000 
+ 536              	.LVL65:
+ 188:../src/main.c **** 							display_char16_16(20+16*4,200-16*6 ,RED,55);
+ 537              		.loc 1 188 0
+ 538 056e 9306D002 		li	a3,45
+ 539 0572 2286     		mv	a2,s0
+ 540 0574 93058007 		li	a1,120
+ 541 0578 13054005 		li	a0,84
+ 542 057c 97000000 		call	display_char16_16
+ 542      E7800000 
+ 543              	.LVL66:
+ 189:../src/main.c **** 							display_char16_16(20+16*4,200-16*7 ,RED,56);
+ 544              		.loc 1 189 0
+ 545 0584 93067003 		li	a3,55
+ 546 0588 2286     		mv	a2,s0
+ 547 058a 93058006 		li	a1,104
+ 548 058e 13054005 		li	a0,84
+ 549 0592 97000000 		call	display_char16_16
+ 549      E7800000 
+ 550              	.LVL67:
+ 190:../src/main.c **** 							display_char16_16(20+16*4,200-16*8 ,RED,77);
+ 551              		.loc 1 190 0
+ 552 059a 93068003 		li	a3,56
+ 553 059e 2286     		mv	a2,s0
+ 554 05a0 93058005 		li	a1,88
+ 555 05a4 13054005 		li	a0,84
+ 556 05a8 97000000 		call	display_char16_16
+ 556      E7800000 
+ 557              	.LVL68:
+ 191:../src/main.c **** 							display_char16_16(20+16*4,200-16*9 ,RED,78);
+ 558              		.loc 1 191 0
+ 559 05b0 9306D004 		li	a3,77
+ 560 05b4 2286     		mv	a2,s0
+ 561 05b6 93058004 		li	a1,72
+ 562 05ba 13054005 		li	a0,84
+ 563 05be 97000000 		call	display_char16_16
+ 563      E7800000 
+ 564              	.LVL69:
+ 192:../src/main.c **** 							
+ 565              		.loc 1 192 0
+ 566 05c6 9306E004 		li	a3,78
+ 567 05ca 2286     		mv	a2,s0
+ 568 05cc 93058003 		li	a1,56
+ 569 05d0 13054005 		li	a0,84
+ 570 05d4 97000000 		call	display_char16_16
+ 570      E7800000 
+ 571              	.LVL70:
+ 195:../src/main.c **** 							display_char16_16(20+16*6,200-16*1 ,RED,22);
+ 572              		.loc 1 195 0
+ 573 05dc D546     		li	a3,21
+ 574 05de 2286     		mv	a2,s0
+ 575 05e0 9305800C 		li	a1,200
+ 576 05e4 13054007 		li	a0,116
+ 577 05e8 97000000 		call	display_char16_16
+ 577      E7800000 
+ 578              	.LVL71:
+ 196:../src/main.c **** 							display_char16_16(20+16*6,200-16*2 ,RED,30);
+ 579              		.loc 1 196 0
+ 580 05f0 D946     		li	a3,22
+ 581 05f2 2286     		mv	a2,s0
+ 582 05f4 9305800B 		li	a1,184
+ 583 05f8 13054007 		li	a0,116
+ 584 05fc 97000000 		call	display_char16_16
+ 584      E7800000 
+ 585              	.LVL72:
+ 197:../src/main.c **** 							display_char16_16(20+16*6,200-16*3 ,RED,23);//:
+ 586              		.loc 1 197 0
+ 587 0604 F946     		li	a3,30
+ 588 0606 2286     		mv	a2,s0
+ 589 0608 9305800A 		li	a1,168
+ 590 060c 13054007 		li	a0,116
+ 591 0610 97000000 		call	display_char16_16
+ 591      E7800000 
+ 592              	.LVL73:
+ 198:../src/main.c **** 							display_char16_16(20+16*6,200-16*4 ,RED,57);
+ 593              		.loc 1 198 0
+ 594 0618 DD46     		li	a3,23
+ 595 061a 2286     		mv	a2,s0
+ 596 061c 93058009 		li	a1,152
+ 597 0620 13054007 		li	a0,116
+ 598 0624 97000000 		call	display_char16_16
+ 598      E7800000 
+ 599              	.LVL74:
+ 199:../src/main.c **** 							display_char16_16(20+16*6,200-16*5 ,RED,58);
+ 600              		.loc 1 199 0
+ 601 062c 93069003 		li	a3,57
+ 602 0630 2286     		mv	a2,s0
+ 603 0632 93058008 		li	a1,136
+ 604 0636 13054007 		li	a0,116
+ 605 063a 97000000 		call	display_char16_16
+ 605      E7800000 
+ 606              	.LVL75:
+ 200:../src/main.c **** 							display_char16_16(20+16*6,200-16*6 ,RED,59);
+ 607              		.loc 1 200 0
+ 608 0642 9306A003 		li	a3,58
+ 609 0646 2286     		mv	a2,s0
+ 610 0648 93058007 		li	a1,120
+ 611 064c 13054007 		li	a0,116
+ 612 0650 97000000 		call	display_char16_16
+ 612      E7800000 
+ 613              	.LVL76:
+ 201:../src/main.c **** 							display_char16_16(20+16*6,200-16*7 ,RED,60);
+ 614              		.loc 1 201 0
+ 615 0658 9306B003 		li	a3,59
+ 616 065c 2286     		mv	a2,s0
+ 617 065e 93058006 		li	a1,104
+ 618 0662 13054007 		li	a0,116
+ 619 0666 97000000 		call	display_char16_16
+ 619      E7800000 
+ 620              	.LVL77:
+ 202:../src/main.c **** 							display_char16_16(20+16*6,200-16*8 ,RED,44);
+ 621              		.loc 1 202 0
+ 622 066e 9306C003 		li	a3,60
+ 623 0672 2286     		mv	a2,s0
+ 624 0674 93058005 		li	a1,88
+ 625 0678 13054007 		li	a0,116
+ 626 067c 97000000 		call	display_char16_16
+ 626      E7800000 
+ 627              	.LVL78:
+ 203:../src/main.c **** 							display_char16_16(20+16*6,200-16*9 ,RED,45);
+ 628              		.loc 1 203 0
+ 629 0684 9306C002 		li	a3,44
+ 630 0688 2286     		mv	a2,s0
+ 631 068a 93058004 		li	a1,72
+ 632 068e 13054007 		li	a0,116
+ 633 0692 97000000 		call	display_char16_16
+ 633      E7800000 
+ 634              	.LVL79:
+ 204:../src/main.c **** 							clear_flag = 4;
+ 635              		.loc 1 204 0
+ 636 069a 9306D002 		li	a3,45
+ 637 069e 2286     		mv	a2,s0
+ 638 06a0 93058003 		li	a1,56
+ 639 06a4 13054007 		li	a0,116
+ 640 06a8 97000000 		call	display_char16_16
+ 640      E7800000 
+ 641              	.LVL80:
+ 642              	.L14:
+ 208:../src/main.c **** 							display_char16_16(20+16*3,250-16*1 ,RED,83);
+ 643              		.loc 1 208 0
+ 644 06b0 93062005 		li	a3,82
+ 645 06b4 2286     		mv	a2,s0
+ 646 06b6 9305A00F 		li	a1,250
+ 647 06ba 13054004 		li	a0,68
+ 648 06be 97000000 		call	display_char16_16
+ 648      E7800000 
+ 649              	.LVL81:
+ 209:../src/main.c **** 							display_char16_16(20+16*3,250-16*2 ,RED,23);//:
+ 650              		.loc 1 209 0
+ 651 06c6 93063005 		li	a3,83
+ 652 06ca 2286     		mv	a2,s0
+ 653 06cc 9305A00E 		li	a1,234
+ 654 06d0 13054004 		li	a0,68
+ 655 06d4 97000000 		call	display_char16_16
+ 655      E7800000 
+ 656              	.LVL82:
+ 210:../src/main.c **** 							switch(LOGIC_TRIGGER_MODE)
+ 657              		.loc 1 210 0
+ 658 06dc DD46     		li	a3,23
+ 659 06de 2286     		mv	a2,s0
+ 660 06e0 9305A00D 		li	a1,218
+ 661 06e4 13054004 		li	a0,68
+ 662 06e8 97000000 		call	display_char16_16
+ 662      E7800000 
+ 663              	.LVL83:
+ 211:../src/main.c **** 							{
+ 664              		.loc 1 211 0
+ 665 06f0 BC48     		lw	a5,80(s1)
+ 666 06f2 B983     		srli	a5,a5,14
+ 667 06f4 9D8B     		andi	a5,a5,7
+ 668 06f6 63E5FA38 		bgtu	a5,s5,.L15
+ 669 06fa 8A07     		slli	a5,a5,2
+ 670 06fc E297     		add	a5,s8,a5
+ 671 06fe 9C43     		lw	a5,0(a5)
+ 672 0700 8287     		jr	a5
+ 673              		.section	.rodata.main,"a",@progbits
+ 674              		.align	2
+ 675              		.align	2
+ 676              	.L17:
+ 677 0000 00000000 		.word	.L16
+ 678 0004 00000000 		.word	.L18
+ 679 0008 00000000 		.word	.L19
+ 680 000c 00000000 		.word	.L20
+ 681 0010 00000000 		.word	.L21
+ 682 0014 00000000 		.word	.L22
+ 683              		.section	.text.startup.main
+ 684              	.LVL84:
+ 685              	.L7:
+  85:../src/main.c **** 				{
+ 686              		.loc 1 85 0
+ 687 0702 BC48     		lw	a5,80(s1)
+ 688 0704 8983     		srli	a5,a5,2
+ 689 0706 8D8B     		andi	a5,a5,3
+ 690 0708 E38C375D 		beq	a5,s3,.L9
+ 691 070c E39B273B 		bne	a5,s2,.L44
+  95:../src/main.c **** 							TFT_full(WHITE);
+ 692              		.loc 1 95 0
+ 693 0710 E38E2697 		beq	a3,s2,.L2
+  96:../src/main.c **** 							//OSP
+ 694              		.loc 1 96 0
+ 695 0714 5285     		mv	a0,s4
+ 696 0716 97000000 		call	TFT_full
+ 696      E7800000 
+ 697              	.LVL85:
+  98:../src/main.c **** 							display_char16_16(80+16*0,200-16*1 ,RED,9 );
+ 698              		.loc 1 98 0
+ 699 071e A146     		li	a3,8
+ 700 0720 2286     		mv	a2,s0
+ 701 0722 9305800C 		li	a1,200
+ 702 0726 13050005 		li	a0,80
+ 703 072a 97000000 		call	display_char16_16
+ 703      E7800000 
+ 704              	.LVL86:
+  99:../src/main.c **** 							display_char16_16(80+16*0,200-16*2 ,RED,10);
+ 705              		.loc 1 99 0
+ 706 0732 A546     		li	a3,9
+ 707 0734 2286     		mv	a2,s0
+ 708 0736 9305800B 		li	a1,184
+ 709 073a 13050005 		li	a0,80
+ 710 073e 97000000 		call	display_char16_16
+ 710      E7800000 
+ 711              	.LVL87:
+ 100:../src/main.c **** 							//UPPER_COMPUTER
+ 712              		.loc 1 100 0
+ 713 0746 A946     		li	a3,10
+ 714 0748 2286     		mv	a2,s0
+ 715 074a 9305800A 		li	a1,168
+ 716 074e 13050005 		li	a0,80
+ 717 0752 97000000 		call	display_char16_16
+ 717      E7800000 
+ 718              	.LVL88:
+ 102:../src/main.c **** 							display_char16_16(80+16*1,200-16*1 ,RED,38);
+ 719              		.loc 1 102 0
+ 720 075a 93065002 		li	a3,37
+ 721 075e 2286     		mv	a2,s0
+ 722 0760 9305800C 		li	a1,200
+ 723 0764 13050006 		li	a0,96
+ 724 0768 97000000 		call	display_char16_16
+ 724      E7800000 
+ 725              	.LVL89:
+ 103:../src/main.c **** 							display_char16_16(80+16*1,200-16*2 ,RED,39);
+ 726              		.loc 1 103 0
+ 727 0770 93066002 		li	a3,38
+ 728 0774 2286     		mv	a2,s0
+ 729 0776 9305800B 		li	a1,184
+ 730 077a 13050006 		li	a0,96
+ 731 077e 97000000 		call	display_char16_16
+ 731      E7800000 
+ 732              	.LVL90:
+ 104:../src/main.c **** 							display_char16_16(80+16*1,200-16*3 ,RED,75);
+ 733              		.loc 1 104 0
+ 734 0786 93067002 		li	a3,39
+ 735 078a 2286     		mv	a2,s0
+ 736 078c 9305800A 		li	a1,168
+ 737 0790 13050006 		li	a0,96
+ 738 0794 97000000 		call	display_char16_16
+ 738      E7800000 
+ 739              	.LVL91:
+ 105:../src/main.c **** 							display_char16_16(80+16*1,200-16*4 ,RED,76);
+ 740              		.loc 1 105 0
+ 741 079c 9306B004 		li	a3,75
+ 742 07a0 2286     		mv	a2,s0
+ 743 07a2 93058009 		li	a1,152
+ 744 07a6 13050006 		li	a0,96
+ 745 07aa 97000000 		call	display_char16_16
+ 745      E7800000 
+ 746              	.LVL92:
+ 106:../src/main.c **** 							clear_flag = 2;
+ 747              		.loc 1 106 0
+ 748 07b2 9306C004 		li	a3,76
+ 749 07b6 2286     		mv	a2,s0
+ 750 07b8 93058008 		li	a1,136
+ 751 07bc 13050006 		li	a0,96
+ 752 07c0 97000000 		call	display_char16_16
+ 752      E7800000 
+ 753              	.LVL93:
+ 107:../src/main.c **** 						}
+ 754              		.loc 1 107 0
+ 755 07c8 8946     		li	a3,2
+ 756 07ca C9B0     		j	.L2
+ 757              	.LVL94:
+ 758              	.L6:
+ 297:../src/main.c **** 							display_char16_16(20+16*0,200-16*1 ,RED,12);
+ 298:../src/main.c **** 							display_char16_16(20+16*0,200-16*2 ,RED,13);
+ 299:../src/main.c **** 							display_char16_16(20+16*0,200-16*3 ,RED,14);
+ 300:../src/main.c **** 							display_char16_16(20+16*0,200-16*4 ,RED,15);
+ 301:../src/main.c **** 							//3
+ 302:../src/main.c **** 							display_char16_16(20+16*1,200-16*0 ,RED,21);
+ 303:../src/main.c **** 							display_char16_16(20+16*1,200-16*1 ,RED,22);
+ 304:../src/main.c **** 							display_char16_16(20+16*1,200-16*2 ,RED,27);
+ 305:../src/main.c **** 							display_char16_16(20+16*1,200-16*3 ,RED,23);//:
+ 306:../src/main.c **** 							display_char16_16(20+16*1,200-16*4 ,RED,35);
+ 307:../src/main.c **** 							display_char16_16(20+16*1,200-16*5 ,RED,36);
+ 308:../src/main.c **** 							display_char16_16(20+16*1,200-16*6 ,RED,23);
+ 309:../src/main.c **** 							display_char16_16(20+16*1,200-16*7 ,RED,37);
+ 310:../src/main.c **** 							display_char16_16(20+16*1,200-16*8 ,RED,38);
+ 311:../src/main.c **** 							display_char16_16(20+16*1,200-16*9 ,RED,39);
+ 312:../src/main.c **** 							//4
+ 313:../src/main.c **** 							display_char16_16(20+16*2,200-16*0 ,RED,21);
+ 314:../src/main.c **** 							display_char16_16(20+16*2,200-16*1 ,RED,22);
+ 315:../src/main.c **** 							display_char16_16(20+16*2,200-16*2 ,RED,28);
+ 316:../src/main.c **** 							display_char16_16(20+16*2,200-16*3 ,RED,23);//:
+ 317:../src/main.c **** 							display_char16_16(20+16*2,200-16*4 ,RED,44);
+ 318:../src/main.c **** 							display_char16_16(20+16*2,200-16*5 ,RED,45);
+ 319:../src/main.c **** 							display_char16_16(20+16*2,200-16*6 ,RED,75);
+ 320:../src/main.c **** 							display_char16_16(20+16*2,200-16*7 ,RED,76);
+ 321:../src/main.c **** 							display_char16_16(20+16*2,200-16*8 ,RED,77);
+ 322:../src/main.c **** 							display_char16_16(20+16*2,200-16*9 ,RED,78);
+ 323:../src/main.c **** 							//MODE1
+ 324:../src/main.c **** 							display_char16_16(20+16*3,250-16*0 ,RED,47);
+ 325:../src/main.c **** 							display_char16_16(20+16*3,250-16*1 ,RED,48);
+ 326:../src/main.c **** 							display_char16_16(20+16*3,250-16*2 ,RED,49);
+ 327:../src/main.c **** 							display_char16_16(20+16*3,250-16*3 ,RED,23);//:
+ 328:../src/main.c **** 							display_char16_16(20+16*3,250-16*4 ,RED,46);
+ 329:../src/main.c **** 							display_char16_16(20+16*3,250-16*5 ,RED,48);
+ 330:../src/main.c **** 							display_char16_16(20+16*3,250-16*6 ,RED,49);
+ 331:../src/main.c **** 							display_char16_16(20+16*3,250-16*7 ,RED,23);//:
+ 332:../src/main.c **** 							display_char16_16(20+16*3,250-16*8 ,RED,50);
+ 333:../src/main.c **** 							display_char16_16(20+16*3,250-16*9 ,RED,51);
+ 334:../src/main.c **** 							display_char16_16(20+16*3,250-16*10,RED,54);
+ 335:../src/main.c **** 							//MODE2
+ 336:../src/main.c **** 							display_char16_16(20+16*4,220-16*0 ,RED,52);
+ 337:../src/main.c **** 							display_char16_16(20+16*4,220-16*1 ,RED,53);
+ 338:../src/main.c **** 							display_char16_16(20+16*4,220-16*2 ,RED,54);
+ 339:../src/main.c **** 							display_char16_16(20+16*4,220-16*3 ,RED,23);//:
+ 340:../src/main.c **** 							display_char16_16(20+16*4,220-16*4 ,RED,50);
+ 341:../src/main.c **** 							display_char16_16(20+16*4,220-16*5 ,RED,52);
+ 342:../src/main.c **** 							display_char16_16(20+16*4,220-16*6 ,RED,54);
+ 343:../src/main.c **** 							display_char16_16(20+16*4,220-16*7 ,RED,23);//:
+ 344:../src/main.c **** 							display_char16_16(20+16*4,220-16*8 ,RED,80);
+ 345:../src/main.c **** 							display_char16_16(20+16*4,220-16*9 ,RED,81);
+ 346:../src/main.c **** 							//5
+ 347:../src/main.c **** 							display_char16_16(20+16*5,200-16*0 ,RED,21);
+ 348:../src/main.c **** 							display_char16_16(20+16*5,200-16*1 ,RED,22);
+ 349:../src/main.c **** 							display_char16_16(20+16*5,200-16*2 ,RED,29);
+ 350:../src/main.c **** 							display_char16_16(20+16*5,200-16*3 ,RED,23);//:
+ 351:../src/main.c **** 							display_char16_16(20+16*5,200-16*4 ,RED,44);
+ 352:../src/main.c **** 							display_char16_16(20+16*5,200-16*5 ,RED,45);
+ 353:../src/main.c **** 							display_char16_16(20+16*5,200-16*6 ,RED,55);
+ 354:../src/main.c **** 							display_char16_16(20+16*5,200-16*7 ,RED,56);
+ 355:../src/main.c **** 							display_char16_16(20+16*5,200-16*8 ,RED,77);
+ 356:../src/main.c **** 							display_char16_16(20+16*5,200-16*9 ,RED,78);
+ 357:../src/main.c **** 							//CHANNEL
+ 358:../src/main.c **** 							display_char16_16(20+16*6,200-16*0 ,RED,55);
+ 359:../src/main.c **** 							display_char16_16(20+16*6,200-16*1 ,RED,56);
+ 360:../src/main.c **** 							display_char16_16(20+16*6,200-16*2 ,RED,25);
+ 361:../src/main.c **** 							display_char16_16(20+16*6,200-16*3 ,RED,23);//:
+ 362:../src/main.c **** 							display_char16_16(20+16*6,200-16*4 ,RED,32);
+ 363:../src/main.c **** 							//6
+ 364:../src/main.c **** 							display_char16_16(20+16*7,200-16*0 ,RED,21);
+ 365:../src/main.c **** 							display_char16_16(20+16*7,200-16*1 ,RED,22);
+ 366:../src/main.c **** 							display_char16_16(20+16*7,200-16*2 ,RED,30);
+ 367:../src/main.c **** 							display_char16_16(20+16*7,200-16*3 ,RED,23);//:
+ 368:../src/main.c **** 							display_char16_16(20+16*7,200-16*4 ,RED,57);
+ 369:../src/main.c **** 							display_char16_16(20+16*7,200-16*5 ,RED,58);
+ 370:../src/main.c **** 							display_char16_16(20+16*7,200-16*6 ,RED,59);
+ 371:../src/main.c **** 							display_char16_16(20+16*7,200-16*7 ,RED,60);
+ 372:../src/main.c **** 							display_char16_16(20+16*7,200-16*8 ,RED,44);
+ 373:../src/main.c **** 							display_char16_16(20+16*7,200-16*9 ,RED,45);
+ 374:../src/main.c **** 							clear_flag = 5;
+ 375:../src/main.c **** 						}
+ 376:../src/main.c **** 						break;
+ 377:../src/main.c **** 				}
+ 378:../src/main.c **** 				break;
+ 379:../src/main.c **** 			case 3://DDS
+ 380:../src/main.c **** 				if(clear_flag != 6){
+ 759              		.loc 1 380 0
+ 760 07cc 9947     		li	a5,6
+ 761 07ce E38FF68A 		beq	a3,a5,.L2
+ 381:../src/main.c **** 					TFT_full(WHITE);
+ 762              		.loc 1 381 0
+ 763 07d2 5285     		mv	a0,s4
+ 764 07d4 97000000 		call	TFT_full
+ 764      E7800000 
+ 765              	.LVL95:
+ 382:../src/main.c **** 					//DDS
+ 383:../src/main.c **** 					display_char16_16(80+16*0,200-16*0 ,RED,16);
+ 766              		.loc 1 383 0
+ 767 07dc C146     		li	a3,16
+ 768 07de 2286     		mv	a2,s0
+ 769 07e0 9305800C 		li	a1,200
+ 770 07e4 13050005 		li	a0,80
+ 771 07e8 97000000 		call	display_char16_16
+ 771      E7800000 
+ 772              	.LVL96:
+ 384:../src/main.c **** 					display_char16_16(80+16*0,200-16*1 ,RED,17);
+ 773              		.loc 1 384 0
+ 774 07f0 C546     		li	a3,17
+ 775 07f2 2286     		mv	a2,s0
+ 776 07f4 9305800B 		li	a1,184
+ 777 07f8 13050005 		li	a0,80
+ 778 07fc 97000000 		call	display_char16_16
+ 778      E7800000 
+ 779              	.LVL97:
+ 385:../src/main.c **** 					display_char16_16(80+16*0,200-16*2 ,RED,18);
+ 780              		.loc 1 385 0
+ 781 0804 C946     		li	a3,18
+ 782 0806 2286     		mv	a2,s0
+ 783 0808 9305800A 		li	a1,168
+ 784 080c 13050005 		li	a0,80
+ 785 0810 97000000 		call	display_char16_16
+ 785      E7800000 
+ 786              	.LVL98:
+ 386:../src/main.c **** 					display_char16_16(80+16*0,200-16*3 ,RED,19);
+ 787              		.loc 1 386 0
+ 788 0818 CD46     		li	a3,19
+ 789 081a 2286     		mv	a2,s0
+ 790 081c 93058009 		li	a1,152
+ 791 0820 13050005 		li	a0,80
+ 792 0824 97000000 		call	display_char16_16
+ 792      E7800000 
+ 793              	.LVL99:
+ 387:../src/main.c **** 					display_char16_16(80+16*0,200-16*4 ,RED,20);
+ 794              		.loc 1 387 0
+ 795 082c D146     		li	a3,20
+ 796 082e 2286     		mv	a2,s0
+ 797 0830 93058008 		li	a1,136
+ 798 0834 13050005 		li	a0,80
+ 799 0838 97000000 		call	display_char16_16
+ 799      E7800000 
+ 800              	.LVL100:
+ 388:../src/main.c **** 					//3
+ 389:../src/main.c **** 					display_char16_16(80+16*1,200-16*0 ,RED,21);
+ 801              		.loc 1 389 0
+ 802 0840 D546     		li	a3,21
+ 803 0842 2286     		mv	a2,s0
+ 804 0844 9305800C 		li	a1,200
+ 805 0848 13050006 		li	a0,96
+ 806 084c 97000000 		call	display_char16_16
+ 806      E7800000 
+ 807              	.LVL101:
+ 390:../src/main.c **** 					display_char16_16(80+16*1,200-16*1 ,RED,22);
+ 808              		.loc 1 390 0
+ 809 0854 D946     		li	a3,22
+ 810 0856 2286     		mv	a2,s0
+ 811 0858 9305800B 		li	a1,184
+ 812 085c 13050006 		li	a0,96
+ 813 0860 97000000 		call	display_char16_16
+ 813      E7800000 
+ 814              	.LVL102:
+ 391:../src/main.c **** 					display_char16_16(80+16*1,200-16*2 ,RED,27);
+ 815              		.loc 1 391 0
+ 816 0868 ED46     		li	a3,27
+ 817 086a 2286     		mv	a2,s0
+ 818 086c 9305800A 		li	a1,168
+ 819 0870 13050006 		li	a0,96
+ 820 0874 97000000 		call	display_char16_16
+ 820      E7800000 
+ 821              	.LVL103:
+ 392:../src/main.c **** 					display_char16_16(80+16*1,200-16*3 ,RED,23);//:
+ 822              		.loc 1 392 0
+ 823 087c DD46     		li	a3,23
+ 824 087e 2286     		mv	a2,s0
+ 825 0880 93058009 		li	a1,152
+ 826 0884 13050006 		li	a0,96
+ 827 0888 97000000 		call	display_char16_16
+ 827      E7800000 
+ 828              	.LVL104:
+ 393:../src/main.c **** 					display_char16_16(80+16*1,200-16*4 ,RED,77);
+ 829              		.loc 1 393 0
+ 830 0890 9306D004 		li	a3,77
+ 831 0894 2286     		mv	a2,s0
+ 832 0896 93058008 		li	a1,136
+ 833 089a 13050006 		li	a0,96
+ 834 089e 97000000 		call	display_char16_16
+ 834      E7800000 
+ 835              	.LVL105:
+ 394:../src/main.c **** 					display_char16_16(80+16*1,200-16*5 ,RED,78);
+ 836              		.loc 1 394 0
+ 837 08a6 9306E004 		li	a3,78
+ 838 08aa 2286     		mv	a2,s0
+ 839 08ac 93058007 		li	a1,120
+ 840 08b0 13050006 		li	a0,96
+ 841 08b4 97000000 		call	display_char16_16
+ 841      E7800000 
+ 842              	.LVL106:
+ 395:../src/main.c **** 					display_char16_16(80+16*1,200-16*6 ,RED,68);
+ 843              		.loc 1 395 0
+ 844 08bc 93064004 		li	a3,68
+ 845 08c0 2286     		mv	a2,s0
+ 846 08c2 93058006 		li	a1,104
+ 847 08c6 13050006 		li	a0,96
+ 848 08ca 97000000 		call	display_char16_16
+ 848      E7800000 
+ 849              	.LVL107:
+ 396:../src/main.c **** 					display_char16_16(80+16*1,200-16*7 ,RED,79);
+ 850              		.loc 1 396 0
+ 851 08d2 9306F004 		li	a3,79
+ 852 08d6 2286     		mv	a2,s0
+ 853 08d8 93058005 		li	a1,88
+ 854 08dc 13050006 		li	a0,96
+ 855 08e0 97000000 		call	display_char16_16
+ 855      E7800000 
+ 856              	.LVL108:
+ 397:../src/main.c **** 					//4
+ 398:../src/main.c **** 					display_char16_16(80+16*2,200-16*0 ,RED,21);
+ 857              		.loc 1 398 0
+ 858 08e8 D546     		li	a3,21
+ 859 08ea 2286     		mv	a2,s0
+ 860 08ec 9305800C 		li	a1,200
+ 861 08f0 13050007 		li	a0,112
+ 862 08f4 97000000 		call	display_char16_16
+ 862      E7800000 
+ 863              	.LVL109:
+ 399:../src/main.c **** 					display_char16_16(80+16*2,200-16*1 ,RED,22);
+ 864              		.loc 1 399 0
+ 865 08fc D946     		li	a3,22
+ 866 08fe 2286     		mv	a2,s0
+ 867 0900 9305800B 		li	a1,184
+ 868 0904 13050007 		li	a0,112
+ 869 0908 97000000 		call	display_char16_16
+ 869      E7800000 
+ 870              	.LVL110:
+ 400:../src/main.c **** 					display_char16_16(80+16*2,200-16*2 ,RED,28);
+ 871              		.loc 1 400 0
+ 872 0910 F146     		li	a3,28
+ 873 0912 2286     		mv	a2,s0
+ 874 0914 9305800A 		li	a1,168
+ 875 0918 13050007 		li	a0,112
+ 876 091c 97000000 		call	display_char16_16
+ 876      E7800000 
+ 877              	.LVL111:
+ 401:../src/main.c **** 					display_char16_16(80+16*2,200-16*3 ,RED,23);//:
+ 878              		.loc 1 401 0
+ 879 0924 DD46     		li	a3,23
+ 880 0926 2286     		mv	a2,s0
+ 881 0928 93058009 		li	a1,152
+ 882 092c 13050007 		li	a0,112
+ 883 0930 97000000 		call	display_char16_16
+ 883      E7800000 
+ 884              	.LVL112:
+ 402:../src/main.c **** 					display_char16_16(80+16*2,200-16*4 ,RED,77);
+ 885              		.loc 1 402 0
+ 886 0938 9306D004 		li	a3,77
+ 887 093c 2286     		mv	a2,s0
+ 888 093e 93058008 		li	a1,136
+ 889 0942 13050007 		li	a0,112
+ 890 0946 97000000 		call	display_char16_16
+ 890      E7800000 
+ 891              	.LVL113:
+ 403:../src/main.c **** 					display_char16_16(80+16*2,200-16*5 ,RED,78);
+ 892              		.loc 1 403 0
+ 893 094e 9306E004 		li	a3,78
+ 894 0952 2286     		mv	a2,s0
+ 895 0954 93058007 		li	a1,120
+ 896 0958 13050007 		li	a0,112
+ 897 095c 97000000 		call	display_char16_16
+ 897      E7800000 
+ 898              	.LVL114:
+ 404:../src/main.c **** 					display_char16_16(80+16*2,200-16*6 ,RED,42);
+ 899              		.loc 1 404 0
+ 900 0964 9306A002 		li	a3,42
+ 901 0968 2286     		mv	a2,s0
+ 902 096a 93058006 		li	a1,104
+ 903 096e 13050007 		li	a0,112
+ 904 0972 97000000 		call	display_char16_16
+ 904      E7800000 
+ 905              	.LVL115:
+ 405:../src/main.c **** 					display_char16_16(80+16*2,200-16*7 ,RED,43);
+ 906              		.loc 1 405 0
+ 907 097a 9306B002 		li	a3,43
+ 908 097e 2286     		mv	a2,s0
+ 909 0980 93058005 		li	a1,88
+ 910 0984 13050007 		li	a0,112
+ 911 0988 97000000 		call	display_char16_16
+ 911      E7800000 
+ 912              	.LVL116:
+ 406:../src/main.c **** 					//5
+ 407:../src/main.c **** 					display_char16_16(80+16*3,200-16*0 ,RED,21);
+ 913              		.loc 1 407 0
+ 914 0990 D546     		li	a3,21
+ 915 0992 2286     		mv	a2,s0
+ 916 0994 9305800C 		li	a1,200
+ 917 0998 13050008 		li	a0,128
+ 918 099c 97000000 		call	display_char16_16
+ 918      E7800000 
+ 919              	.LVL117:
+ 408:../src/main.c **** 					display_char16_16(80+16*3,200-16*1 ,RED,22);
+ 920              		.loc 1 408 0
+ 921 09a4 D946     		li	a3,22
+ 922 09a6 2286     		mv	a2,s0
+ 923 09a8 9305800B 		li	a1,184
+ 924 09ac 13050008 		li	a0,128
+ 925 09b0 97000000 		call	display_char16_16
+ 925      E7800000 
+ 926              	.LVL118:
+ 409:../src/main.c **** 					display_char16_16(80+16*3,200-16*2 ,RED,29);
+ 927              		.loc 1 409 0
+ 928 09b8 F546     		li	a3,29
+ 929 09ba 2286     		mv	a2,s0
+ 930 09bc 9305800A 		li	a1,168
+ 931 09c0 13050008 		li	a0,128
+ 932 09c4 97000000 		call	display_char16_16
+ 932      E7800000 
+ 933              	.LVL119:
+ 410:../src/main.c **** 					display_char16_16(80+16*3,200-16*3 ,RED,23);//:
+ 934              		.loc 1 410 0
+ 935 09cc DD46     		li	a3,23
+ 936 09ce 2286     		mv	a2,s0
+ 937 09d0 93058009 		li	a1,152
+ 938 09d4 13050008 		li	a0,128
+ 939 09d8 97000000 		call	display_char16_16
+ 939      E7800000 
+ 940              	.LVL120:
+ 411:../src/main.c **** 					display_char16_16(80+16*3,200-16*4 ,RED,77);
+ 941              		.loc 1 411 0
+ 942 09e0 9306D004 		li	a3,77
+ 943 09e4 2286     		mv	a2,s0
+ 944 09e6 93058008 		li	a1,136
+ 945 09ea 13050008 		li	a0,128
+ 946 09ee 97000000 		call	display_char16_16
+ 946      E7800000 
+ 947              	.LVL121:
+ 412:../src/main.c **** 					display_char16_16(80+16*3,200-16*5 ,RED,78);
+ 948              		.loc 1 412 0
+ 949 09f6 9306E004 		li	a3,78
+ 950 09fa 2286     		mv	a2,s0
+ 951 09fc 93058007 		li	a1,120
+ 952 0a00 13050008 		li	a0,128
+ 953 0a04 97000000 		call	display_char16_16
+ 953      E7800000 
+ 954              	.LVL122:
+ 413:../src/main.c **** 					display_char16_16(80+16*3,200-16*6 ,RED,40);
+ 955              		.loc 1 413 0
+ 956 0a0c 93068002 		li	a3,40
+ 957 0a10 2286     		mv	a2,s0
+ 958 0a12 93058006 		li	a1,104
+ 959 0a16 13050008 		li	a0,128
+ 960 0a1a 97000000 		call	display_char16_16
+ 960      E7800000 
+ 961              	.LVL123:
+ 414:../src/main.c **** 					display_char16_16(80+16*3,200-16*7 ,RED,41);
+ 962              		.loc 1 414 0
+ 963 0a22 93069002 		li	a3,41
+ 964 0a26 2286     		mv	a2,s0
+ 965 0a28 93058005 		li	a1,88
+ 966 0a2c 13050008 		li	a0,128
+ 967 0a30 97000000 		call	display_char16_16
+ 967      E7800000 
+ 968              	.LVL124:
+ 415:../src/main.c **** 					clear_flag = 6;
+ 969              		.loc 1 415 0
+ 970 0a38 9946     		li	a3,6
+ 971 0a3a 6FF02FE5 		j	.L2
+ 972              	.LVL125:
+ 973              	.L21:
+ 234:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,52);
+ 974              		.loc 1 234 0
+ 975 0a3e 2286     		mv	a2,s0
+ 976 0a40 93062003 		li	a3,50
+ 977 0a44 9305A00C 		li	a1,202
+ 978 0a48 13054004 		li	a0,68
+ 979 0a4c 97000000 		call	display_char16_16
+ 979      E7800000 
+ 980              	.LVL126:
+ 235:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,54);
+ 981              		.loc 1 235 0
+ 982 0a54 2286     		mv	a2,s0
+ 983 0a56 93064003 		li	a3,52
+ 984              	.L41:
+ 985 0a5a 9305A00B 		li	a1,186
+ 986 0a5e 13054004 		li	a0,68
+ 987 0a62 97000000 		call	display_char16_16
+ 987      E7800000 
+ 988              	.LVL127:
+ 236:../src/main.c **** 									break;
+ 989              		.loc 1 236 0
+ 990 0a6a 93066003 		li	a3,54
+ 991 0a6e 2286     		mv	a2,s0
+ 992 0a70 9305A00A 		li	a1,170
+ 993 0a74 13054004 		li	a0,68
+ 994 0a78 97000000 		call	display_char16_16
+ 994      E7800000 
+ 995              	.LVL128:
+ 996              	.L15:
+ 245:../src/main.c **** 							display_char16_16(20+16*5,250-16*1 ,RED,83);
+ 997              		.loc 1 245 0
+ 998 0a80 93062005 		li	a3,82
+ 999 0a84 2286     		mv	a2,s0
+ 1000 0a86 9305A00F 		li	a1,250
+ 1001 0a8a 13054006 		li	a0,100
+ 1002 0a8e 97000000 		call	display_char16_16
+ 1002      E7800000 
+ 1003              	.LVL129:
+ 246:../src/main.c **** 							display_char16_16(20+16*5,250-16*2 ,RED,23);//:
+ 1004              		.loc 1 246 0
+ 1005 0a96 93063005 		li	a3,83
+ 1006 0a9a 2286     		mv	a2,s0
+ 1007 0a9c 9305A00E 		li	a1,234
+ 1008 0aa0 13054006 		li	a0,100
+ 1009 0aa4 97000000 		call	display_char16_16
+ 1009      E7800000 
+ 1010              	.LVL130:
+ 247:../src/main.c **** 							switch(LOGIC_TRIGGER_CHANNEL)
+ 1011              		.loc 1 247 0
+ 1012 0aac DD46     		li	a3,23
+ 1013 0aae 2286     		mv	a2,s0
+ 1014 0ab0 9305A00D 		li	a1,218
+ 1015 0ab4 13054006 		li	a0,100
+ 1016 0ab8 97000000 		call	display_char16_16
+ 1016      E7800000 
+ 1017              	.LVL131:
+ 248:../src/main.c **** 							{
+ 1018              		.loc 1 248 0
+ 1019 0ac0 BC48     		lw	a5,80(s1)
+ 1020 0ac2 1D47     		li	a4,7
+ 1021 0ac4 C583     		srli	a5,a5,17
+ 1022 0ac6 BD8B     		andi	a5,a5,15
+ 1023 0ac8 E36CF722 		bgtu	a5,a4,.L32
+ 1024 0acc 8A07     		slli	a5,a5,2
+ 1025 0ace DE97     		add	a5,s7,a5
+ 1026 0ad0 9C43     		lw	a5,0(a5)
+ 286:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 1027              		.loc 1 286 0
+ 1028 0ad2 93067003 		li	a3,55
+ 1029 0ad6 2286     		mv	a2,s0
+ 1030 0ad8 9305A00C 		li	a1,202
+ 1031 0adc 13054006 		li	a0,100
+ 248:../src/main.c **** 							{
+ 1032              		.loc 1 248 0
+ 1033 0ae0 8287     		jr	a5
+ 1034              		.section	.rodata.main
+ 1035              		.align	2
+ 1036              		.align	2
+ 1037              	.L24:
+ 1038 0018 00000000 		.word	.L23
+ 1039 001c 00000000 		.word	.L25
+ 1040 0020 00000000 		.word	.L26
+ 1041 0024 00000000 		.word	.L27
+ 1042 0028 00000000 		.word	.L28
+ 1043 002c 00000000 		.word	.L29
+ 1044 0030 00000000 		.word	.L30
+ 1045 0034 00000000 		.word	.L31
+ 1046              		.section	.text.startup.main
+ 1047              	.L19:
+ 224:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,51);
+ 1048              		.loc 1 224 0
+ 1049 0ae2 2286     		mv	a2,s0
+ 1050 0ae4 93062003 		li	a3,50
+ 1051 0ae8 9305A00C 		li	a1,202
+ 1052 0aec 13054004 		li	a0,68
+ 1053 0af0 97000000 		call	display_char16_16
+ 1053      E7800000 
+ 1054              	.LVL132:
+ 225:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,54);
+ 1055              		.loc 1 225 0
+ 1056 0af8 2286     		mv	a2,s0
+ 1057 0afa 93063003 		li	a3,51
+ 1058 0afe B1BF     		j	.L41
+ 1059              	.L20:
+ 229:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,53);
+ 1060              		.loc 1 229 0
+ 1061 0b00 2286     		mv	a2,s0
+ 1062 0b02 93064003 		li	a3,52
+ 1063 0b06 9305A00C 		li	a1,202
+ 1064 0b0a 13054004 		li	a0,68
+ 1065 0b0e 97000000 		call	display_char16_16
+ 1065      E7800000 
+ 1066              	.LVL133:
+ 230:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,54);
+ 1067              		.loc 1 230 0
+ 1068 0b16 2286     		mv	a2,s0
+ 1069 0b18 93065003 		li	a3,53
+ 1070 0b1c 3DBF     		j	.L41
+ 1071              	.L16:
+ 214:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,48);
+ 1072              		.loc 1 214 0
+ 1073 0b1e 2286     		mv	a2,s0
+ 1074 0b20 9306F002 		li	a3,47
+ 1075              	.L40:
+ 219:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,48);
+ 1076              		.loc 1 219 0
+ 1077 0b24 9305A00C 		li	a1,202
+ 1078 0b28 13054004 		li	a0,68
+ 1079 0b2c 97000000 		call	display_char16_16
+ 1079      E7800000 
+ 1080              	.LVL134:
+ 220:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,49);
+ 1081              		.loc 1 220 0
+ 1082 0b34 2286     		mv	a2,s0
+ 1083 0b36 93060003 		li	a3,48
+ 1084 0b3a 9305A00B 		li	a1,186
+ 1085 0b3e 13054004 		li	a0,68
+ 1086 0b42 97000000 		call	display_char16_16
+ 1086      E7800000 
+ 1087              	.LVL135:
+ 221:../src/main.c **** 									break;
+ 1088              		.loc 1 221 0
+ 1089 0b4a 93061003 		li	a3,49
+ 1090 0b4e 2286     		mv	a2,s0
+ 1091 0b50 9305A00A 		li	a1,170
+ 1092 0b54 13054004 		li	a0,68
+ 1093 0b58 97000000 		call	display_char16_16
+ 1093      E7800000 
+ 1094              	.LVL136:
+ 222:../src/main.c **** 								case 2:
+ 1095              		.loc 1 222 0
+ 1096 0b60 05B7     		j	.L15
+ 1097              	.L22:
+ 239:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,81);
+ 1098              		.loc 1 239 0
+ 1099 0b62 2286     		mv	a2,s0
+ 1100 0b64 93060005 		li	a3,80
+ 1101 0b68 9305A00C 		li	a1,202
+ 1102 0b6c 13054004 		li	a0,68
+ 1103 0b70 97000000 		call	display_char16_16
+ 1103      E7800000 
+ 1104              	.LVL137:
+ 240:../src/main.c **** 									display_char16_16(20+16*3,250-16*5 ,RED,44);
+ 1105              		.loc 1 240 0
+ 1106 0b78 2286     		mv	a2,s0
+ 1107 0b7a 93061005 		li	a3,81
+ 1108 0b7e 9305A00B 		li	a1,186
+ 1109 0b82 13054004 		li	a0,68
+ 1110 0b86 97000000 		call	display_char16_16
+ 1110      E7800000 
+ 1111              	.LVL138:
+ 241:../src/main.c **** 									break;
+ 1112              		.loc 1 241 0
+ 1113 0b8e 9306C002 		li	a3,44
+ 1114 0b92 2286     		mv	a2,s0
+ 1115 0b94 9305A00A 		li	a1,170
+ 1116 0b98 13054004 		li	a0,68
+ 1117 0b9c 97000000 		call	display_char16_16
+ 1117      E7800000 
+ 1118              	.LVL139:
+ 242:../src/main.c **** 							}
+ 1119              		.loc 1 242 0
+ 1120 0ba4 F1BD     		j	.L15
+ 1121              	.L18:
+ 219:../src/main.c **** 									display_char16_16(20+16*3,250-16*4 ,RED,48);
+ 1122              		.loc 1 219 0
+ 1123 0ba6 2286     		mv	a2,s0
+ 1124 0ba8 9306E002 		li	a3,46
+ 1125 0bac A5BF     		j	.L40
+ 1126              	.L30:
+ 281:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 1127              		.loc 1 281 0
+ 1128 0bae 97000000 		call	display_char16_16
+ 1128      E7800000 
+ 1129              	.LVL140:
+ 282:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,31);
+ 1130              		.loc 1 282 0
+ 1131 0bb6 93068003 		li	a3,56
+ 1132 0bba 2286     		mv	a2,s0
+ 1133 0bbc 9305A00B 		li	a1,186
+ 1134 0bc0 13054006 		li	a0,100
+ 1135 0bc4 97000000 		call	display_char16_16
+ 1135      E7800000 
+ 1136              	.LVL141:
+ 283:../src/main.c **** 									break;
+ 1137              		.loc 1 283 0
+ 1138 0bcc FD46     		li	a3,31
+ 1139              	.L39:
+ 258:../src/main.c **** 									break;
+ 1140              		.loc 1 258 0
+ 1141 0bce 2286     		mv	a2,s0
+ 1142 0bd0 9305A00A 		li	a1,170
+ 1143 0bd4 13054006 		li	a0,100
+ 1144 0bd8 97000000 		call	display_char16_16
+ 1144      E7800000 
+ 1145              	.LVL142:
+ 259:../src/main.c **** 								case 2:
+ 1146              		.loc 1 259 0
+ 1147 0be0 9146     		li	a3,4
+ 1148 0be2 6FF0AFCA 		j	.L2
+ 1149              	.L29:
+ 276:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 1150              		.loc 1 276 0
+ 1151 0be6 97000000 		call	display_char16_16
+ 1151      E7800000 
+ 1152              	.LVL143:
+ 277:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,30);
+ 1153              		.loc 1 277 0
+ 1154 0bee 93068003 		li	a3,56
+ 1155 0bf2 2286     		mv	a2,s0
+ 1156 0bf4 9305A00B 		li	a1,186
+ 1157 0bf8 13054006 		li	a0,100
+ 1158 0bfc 97000000 		call	display_char16_16
+ 1158      E7800000 
+ 1159              	.LVL144:
+ 278:../src/main.c **** 									break;
+ 1160              		.loc 1 278 0
+ 1161 0c04 F946     		li	a3,30
+ 1162 0c06 E1B7     		j	.L39
+ 1163              	.L28:
+ 271:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 1164              		.loc 1 271 0
+ 1165 0c08 97000000 		call	display_char16_16
+ 1165      E7800000 
+ 1166              	.LVL145:
+ 272:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,29);
+ 1167              		.loc 1 272 0
+ 1168 0c10 93068003 		li	a3,56
+ 1169 0c14 2286     		mv	a2,s0
+ 1170 0c16 9305A00B 		li	a1,186
+ 1171 0c1a 13054006 		li	a0,100
+ 1172 0c1e 97000000 		call	display_char16_16
+ 1172      E7800000 
+ 1173              	.LVL146:
+ 273:../src/main.c **** 									break;
+ 1174              		.loc 1 273 0
+ 1175 0c26 F546     		li	a3,29
+ 1176 0c28 5DB7     		j	.L39
+ 1177              	.L27:
+ 266:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 1178              		.loc 1 266 0
+ 1179 0c2a 97000000 		call	display_char16_16
+ 1179      E7800000 
+ 1180              	.LVL147:
+ 267:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,28);
+ 1181              		.loc 1 267 0
+ 1182 0c32 93068003 		li	a3,56
+ 1183 0c36 2286     		mv	a2,s0
+ 1184 0c38 9305A00B 		li	a1,186
+ 1185 0c3c 13054006 		li	a0,100
+ 1186 0c40 97000000 		call	display_char16_16
+ 1186      E7800000 
+ 1187              	.LVL148:
+ 268:../src/main.c **** 									break;
+ 1188              		.loc 1 268 0
+ 1189 0c48 F146     		li	a3,28
+ 1190 0c4a 51B7     		j	.L39
+ 1191              	.L26:
+ 261:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 1192              		.loc 1 261 0
+ 1193 0c4c 97000000 		call	display_char16_16
+ 1193      E7800000 
+ 1194              	.LVL149:
+ 262:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,27);
+ 1195              		.loc 1 262 0
+ 1196 0c54 93068003 		li	a3,56
+ 1197 0c58 2286     		mv	a2,s0
+ 1198 0c5a 9305A00B 		li	a1,186
+ 1199 0c5e 13054006 		li	a0,100
+ 1200 0c62 97000000 		call	display_char16_16
+ 1200      E7800000 
+ 1201              	.LVL150:
+ 263:../src/main.c **** 									break;
+ 1202              		.loc 1 263 0
+ 1203 0c6a ED46     		li	a3,27
+ 1204 0c6c 8DB7     		j	.L39
+ 1205              	.L25:
+ 256:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 1206              		.loc 1 256 0
+ 1207 0c6e 97000000 		call	display_char16_16
+ 1207      E7800000 
+ 1208              	.LVL151:
+ 257:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,26);
+ 1209              		.loc 1 257 0
+ 1210 0c76 93068003 		li	a3,56
+ 1211 0c7a 2286     		mv	a2,s0
+ 1212 0c7c 9305A00B 		li	a1,186
+ 1213 0c80 13054006 		li	a0,100
+ 1214 0c84 97000000 		call	display_char16_16
+ 1214      E7800000 
+ 1215              	.LVL152:
+ 258:../src/main.c **** 									break;
+ 1216              		.loc 1 258 0
+ 1217 0c8c E946     		li	a3,26
+ 1218 0c8e 81B7     		j	.L39
+ 1219              	.L23:
+ 251:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 1220              		.loc 1 251 0
+ 1221 0c90 97000000 		call	display_char16_16
+ 1221      E7800000 
+ 1222              	.LVL153:
+ 252:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,25);
+ 1223              		.loc 1 252 0
+ 1224 0c98 93068003 		li	a3,56
+ 1225 0c9c 2286     		mv	a2,s0
+ 1226 0c9e 9305A00B 		li	a1,186
+ 1227 0ca2 13054006 		li	a0,100
+ 1228 0ca6 97000000 		call	display_char16_16
+ 1228      E7800000 
+ 1229              	.LVL154:
+ 253:../src/main.c **** 									break;
+ 1230              		.loc 1 253 0
+ 1231 0cae E546     		li	a3,25
+ 1232 0cb0 39BF     		j	.L39
+ 1233              	.L31:
+ 286:../src/main.c **** 									display_char16_16(20+16*5,250-16*4 ,RED,56);
+ 1234              		.loc 1 286 0
+ 1235 0cb2 97000000 		call	display_char16_16
+ 1235      E7800000 
+ 1236              	.LVL155:
+ 287:../src/main.c **** 									display_char16_16(20+16*5,250-16*5 ,RED,32);
+ 1237              		.loc 1 287 0
+ 1238 0cba 93068003 		li	a3,56
+ 1239 0cbe 2286     		mv	a2,s0
+ 1240 0cc0 9305A00B 		li	a1,186
+ 1241 0cc4 13054006 		li	a0,100
+ 1242 0cc8 97000000 		call	display_char16_16
+ 1242      E7800000 
+ 1243              	.LVL156:
+ 288:../src/main.c **** 									break;
+ 1244              		.loc 1 288 0
+ 1245 0cd0 93060002 		li	a3,32
+ 1246 0cd4 EDBD     		j	.L39
+ 1247              	.LVL157:
+ 1248              	.L37:
+ 293:../src/main.c **** 							TFT_full(WHITE);
+ 1249              		.loc 1 293 0
+ 1250 0cd6 638B56BB 		beq	a3,s5,.L2
+ 294:../src/main.c **** 							//LOGIC
+ 1251              		.loc 1 294 0
+ 1252 0cda 5285     		mv	a0,s4
+ 1253 0cdc 97000000 		call	TFT_full
+ 1253      E7800000 
+ 1254              	.LVL158:
+ 296:../src/main.c **** 							display_char16_16(20+16*0,200-16*1 ,RED,12);
+ 1255              		.loc 1 296 0
+ 1256 0ce4 AD46     		li	a3,11
+ 1257 0ce6 2286     		mv	a2,s0
+ 1258 0ce8 9305800C 		li	a1,200
+ 1259 0cec 5145     		li	a0,20
+ 1260 0cee 97000000 		call	display_char16_16
+ 1260      E7800000 
+ 1261              	.LVL159:
+ 297:../src/main.c **** 							display_char16_16(20+16*0,200-16*2 ,RED,13);
+ 1262              		.loc 1 297 0
+ 1263 0cf6 B146     		li	a3,12
+ 1264 0cf8 2286     		mv	a2,s0
+ 1265 0cfa 9305800B 		li	a1,184
+ 1266 0cfe 5145     		li	a0,20
+ 1267 0d00 97000000 		call	display_char16_16
+ 1267      E7800000 
+ 1268              	.LVL160:
+ 298:../src/main.c **** 							display_char16_16(20+16*0,200-16*3 ,RED,14);
+ 1269              		.loc 1 298 0
+ 1270 0d08 B546     		li	a3,13
+ 1271 0d0a 2286     		mv	a2,s0
+ 1272 0d0c 9305800A 		li	a1,168
+ 1273 0d10 5145     		li	a0,20
+ 1274 0d12 97000000 		call	display_char16_16
+ 1274      E7800000 
+ 1275              	.LVL161:
+ 299:../src/main.c **** 							display_char16_16(20+16*0,200-16*4 ,RED,15);
+ 1276              		.loc 1 299 0
+ 1277 0d1a B946     		li	a3,14
+ 1278 0d1c 2286     		mv	a2,s0
+ 1279 0d1e 93058009 		li	a1,152
+ 1280 0d22 5145     		li	a0,20
+ 1281 0d24 97000000 		call	display_char16_16
+ 1281      E7800000 
+ 1282              	.LVL162:
+ 300:../src/main.c **** 							//3
+ 1283              		.loc 1 300 0
+ 1284 0d2c BD46     		li	a3,15
+ 1285 0d2e 2286     		mv	a2,s0
+ 1286 0d30 93058008 		li	a1,136
+ 1287 0d34 5145     		li	a0,20
+ 1288 0d36 97000000 		call	display_char16_16
+ 1288      E7800000 
+ 1289              	.LVL163:
+ 302:../src/main.c **** 							display_char16_16(20+16*1,200-16*1 ,RED,22);
+ 1290              		.loc 1 302 0
+ 1291 0d3e D546     		li	a3,21
+ 1292 0d40 2286     		mv	a2,s0
+ 1293 0d42 9305800C 		li	a1,200
+ 1294 0d46 13054002 		li	a0,36
+ 1295 0d4a 97000000 		call	display_char16_16
+ 1295      E7800000 
+ 1296              	.LVL164:
+ 303:../src/main.c **** 							display_char16_16(20+16*1,200-16*2 ,RED,27);
+ 1297              		.loc 1 303 0
+ 1298 0d52 D946     		li	a3,22
+ 1299 0d54 2286     		mv	a2,s0
+ 1300 0d56 9305800B 		li	a1,184
+ 1301 0d5a 13054002 		li	a0,36
+ 1302 0d5e 97000000 		call	display_char16_16
+ 1302      E7800000 
+ 1303              	.LVL165:
+ 304:../src/main.c **** 							display_char16_16(20+16*1,200-16*3 ,RED,23);//:
+ 1304              		.loc 1 304 0
+ 1305 0d66 ED46     		li	a3,27
+ 1306 0d68 2286     		mv	a2,s0
+ 1307 0d6a 9305800A 		li	a1,168
+ 1308 0d6e 13054002 		li	a0,36
+ 1309 0d72 97000000 		call	display_char16_16
+ 1309      E7800000 
+ 1310              	.LVL166:
+ 305:../src/main.c **** 							display_char16_16(20+16*1,200-16*4 ,RED,35);
+ 1311              		.loc 1 305 0
+ 1312 0d7a DD46     		li	a3,23
+ 1313 0d7c 2286     		mv	a2,s0
+ 1314 0d7e 93058009 		li	a1,152
+ 1315 0d82 13054002 		li	a0,36
+ 1316 0d86 97000000 		call	display_char16_16
+ 1316      E7800000 
+ 1317              	.LVL167:
+ 306:../src/main.c **** 							display_char16_16(20+16*1,200-16*5 ,RED,36);
+ 1318              		.loc 1 306 0
+ 1319 0d8e 93063002 		li	a3,35
+ 1320 0d92 2286     		mv	a2,s0
+ 1321 0d94 93058008 		li	a1,136
+ 1322 0d98 13054002 		li	a0,36
+ 1323 0d9c 97000000 		call	display_char16_16
+ 1323      E7800000 
+ 1324              	.LVL168:
+ 307:../src/main.c **** 							display_char16_16(20+16*1,200-16*6 ,RED,23);
+ 1325              		.loc 1 307 0
+ 1326 0da4 93064002 		li	a3,36
+ 1327 0da8 2286     		mv	a2,s0
+ 1328 0daa 93058007 		li	a1,120
+ 1329 0dae 13054002 		li	a0,36
+ 1330 0db2 97000000 		call	display_char16_16
+ 1330      E7800000 
+ 1331              	.LVL169:
+ 308:../src/main.c **** 							display_char16_16(20+16*1,200-16*7 ,RED,37);
+ 1332              		.loc 1 308 0
+ 1333 0dba DD46     		li	a3,23
+ 1334 0dbc 2286     		mv	a2,s0
+ 1335 0dbe 93058006 		li	a1,104
+ 1336 0dc2 13054002 		li	a0,36
+ 1337 0dc6 97000000 		call	display_char16_16
+ 1337      E7800000 
+ 1338              	.LVL170:
+ 309:../src/main.c **** 							display_char16_16(20+16*1,200-16*8 ,RED,38);
+ 1339              		.loc 1 309 0
+ 1340 0dce 93065002 		li	a3,37
+ 1341 0dd2 2286     		mv	a2,s0
+ 1342 0dd4 93058005 		li	a1,88
+ 1343 0dd8 13054002 		li	a0,36
+ 1344 0ddc 97000000 		call	display_char16_16
+ 1344      E7800000 
+ 1345              	.LVL171:
+ 310:../src/main.c **** 							display_char16_16(20+16*1,200-16*9 ,RED,39);
+ 1346              		.loc 1 310 0
+ 1347 0de4 93066002 		li	a3,38
+ 1348 0de8 2286     		mv	a2,s0
+ 1349 0dea 93058004 		li	a1,72
+ 1350 0dee 13054002 		li	a0,36
+ 1351 0df2 97000000 		call	display_char16_16
+ 1351      E7800000 
+ 1352              	.LVL172:
+ 311:../src/main.c **** 							//4
+ 1353              		.loc 1 311 0
+ 1354 0dfa 93067002 		li	a3,39
+ 1355 0dfe 2286     		mv	a2,s0
+ 1356 0e00 93058003 		li	a1,56
+ 1357 0e04 13054002 		li	a0,36
+ 1358 0e08 97000000 		call	display_char16_16
+ 1358      E7800000 
+ 1359              	.LVL173:
+ 313:../src/main.c **** 							display_char16_16(20+16*2,200-16*1 ,RED,22);
+ 1360              		.loc 1 313 0
+ 1361 0e10 D546     		li	a3,21
+ 1362 0e12 2286     		mv	a2,s0
+ 1363 0e14 9305800C 		li	a1,200
+ 1364 0e18 13054003 		li	a0,52
+ 1365 0e1c 97000000 		call	display_char16_16
+ 1365      E7800000 
+ 1366              	.LVL174:
+ 314:../src/main.c **** 							display_char16_16(20+16*2,200-16*2 ,RED,28);
+ 1367              		.loc 1 314 0
+ 1368 0e24 D946     		li	a3,22
+ 1369 0e26 2286     		mv	a2,s0
+ 1370 0e28 9305800B 		li	a1,184
+ 1371 0e2c 13054003 		li	a0,52
+ 1372 0e30 97000000 		call	display_char16_16
+ 1372      E7800000 
+ 1373              	.LVL175:
+ 315:../src/main.c **** 							display_char16_16(20+16*2,200-16*3 ,RED,23);//:
+ 1374              		.loc 1 315 0
+ 1375 0e38 F146     		li	a3,28
+ 1376 0e3a 2286     		mv	a2,s0
+ 1377 0e3c 9305800A 		li	a1,168
+ 1378 0e40 13054003 		li	a0,52
+ 1379 0e44 97000000 		call	display_char16_16
+ 1379      E7800000 
+ 1380              	.LVL176:
+ 316:../src/main.c **** 							display_char16_16(20+16*2,200-16*4 ,RED,44);
+ 1381              		.loc 1 316 0
+ 1382 0e4c DD46     		li	a3,23
+ 1383 0e4e 2286     		mv	a2,s0
+ 1384 0e50 93058009 		li	a1,152
+ 1385 0e54 13054003 		li	a0,52
+ 1386 0e58 97000000 		call	display_char16_16
+ 1386      E7800000 
+ 1387              	.LVL177:
+ 317:../src/main.c **** 							display_char16_16(20+16*2,200-16*5 ,RED,45);
+ 1388              		.loc 1 317 0
+ 1389 0e60 9306C002 		li	a3,44
+ 1390 0e64 2286     		mv	a2,s0
+ 1391 0e66 93058008 		li	a1,136
+ 1392 0e6a 13054003 		li	a0,52
+ 1393 0e6e 97000000 		call	display_char16_16
+ 1393      E7800000 
+ 1394              	.LVL178:
+ 318:../src/main.c **** 							display_char16_16(20+16*2,200-16*6 ,RED,75);
+ 1395              		.loc 1 318 0
+ 1396 0e76 9306D002 		li	a3,45
+ 1397 0e7a 2286     		mv	a2,s0
+ 1398 0e7c 93058007 		li	a1,120
+ 1399 0e80 13054003 		li	a0,52
+ 1400 0e84 97000000 		call	display_char16_16
+ 1400      E7800000 
+ 1401              	.LVL179:
+ 319:../src/main.c **** 							display_char16_16(20+16*2,200-16*7 ,RED,76);
+ 1402              		.loc 1 319 0
+ 1403 0e8c 9306B004 		li	a3,75
+ 1404 0e90 2286     		mv	a2,s0
+ 1405 0e92 93058006 		li	a1,104
+ 1406 0e96 13054003 		li	a0,52
+ 1407 0e9a 97000000 		call	display_char16_16
+ 1407      E7800000 
+ 1408              	.LVL180:
+ 320:../src/main.c **** 							display_char16_16(20+16*2,200-16*8 ,RED,77);
+ 1409              		.loc 1 320 0
+ 1410 0ea2 9306C004 		li	a3,76
+ 1411 0ea6 2286     		mv	a2,s0
+ 1412 0ea8 93058005 		li	a1,88
+ 1413 0eac 13054003 		li	a0,52
+ 1414 0eb0 97000000 		call	display_char16_16
+ 1414      E7800000 
+ 1415              	.LVL181:
+ 321:../src/main.c **** 							display_char16_16(20+16*2,200-16*9 ,RED,78);
+ 1416              		.loc 1 321 0
+ 1417 0eb8 9306D004 		li	a3,77
+ 1418 0ebc 2286     		mv	a2,s0
+ 1419 0ebe 93058004 		li	a1,72
+ 1420 0ec2 13054003 		li	a0,52
+ 1421 0ec6 97000000 		call	display_char16_16
+ 1421      E7800000 
+ 1422              	.LVL182:
+ 322:../src/main.c **** 							//MODE1
+ 1423              		.loc 1 322 0
+ 1424 0ece 9306E004 		li	a3,78
+ 1425 0ed2 2286     		mv	a2,s0
+ 1426 0ed4 93058003 		li	a1,56
+ 1427 0ed8 13054003 		li	a0,52
+ 1428 0edc 97000000 		call	display_char16_16
+ 1428      E7800000 
+ 1429              	.LVL183:
+ 324:../src/main.c **** 							display_char16_16(20+16*3,250-16*1 ,RED,48);
+ 1430              		.loc 1 324 0
+ 1431 0ee4 9306F002 		li	a3,47
+ 1432 0ee8 2286     		mv	a2,s0
+ 1433 0eea 9305A00F 		li	a1,250
+ 1434 0eee 13054004 		li	a0,68
+ 1435 0ef2 97000000 		call	display_char16_16
+ 1435      E7800000 
+ 1436              	.LVL184:
+ 325:../src/main.c **** 							display_char16_16(20+16*3,250-16*2 ,RED,49);
+ 1437              		.loc 1 325 0
+ 1438 0efa 93060003 		li	a3,48
+ 1439 0efe 2286     		mv	a2,s0
+ 1440 0f00 9305A00E 		li	a1,234
+ 1441 0f04 13054004 		li	a0,68
+ 1442 0f08 97000000 		call	display_char16_16
+ 1442      E7800000 
+ 1443              	.LVL185:
+ 326:../src/main.c **** 							display_char16_16(20+16*3,250-16*3 ,RED,23);//:
+ 1444              		.loc 1 326 0
+ 1445 0f10 93061003 		li	a3,49
+ 1446 0f14 2286     		mv	a2,s0
+ 1447 0f16 9305A00D 		li	a1,218
+ 1448 0f1a 13054004 		li	a0,68
+ 1449 0f1e 97000000 		call	display_char16_16
+ 1449      E7800000 
+ 1450              	.LVL186:
+ 327:../src/main.c **** 							display_char16_16(20+16*3,250-16*4 ,RED,46);
+ 1451              		.loc 1 327 0
+ 1452 0f26 DD46     		li	a3,23
+ 1453 0f28 2286     		mv	a2,s0
+ 1454 0f2a 9305A00C 		li	a1,202
+ 1455 0f2e 13054004 		li	a0,68
+ 1456 0f32 97000000 		call	display_char16_16
+ 1456      E7800000 
+ 1457              	.LVL187:
+ 328:../src/main.c **** 							display_char16_16(20+16*3,250-16*5 ,RED,48);
+ 1458              		.loc 1 328 0
+ 1459 0f3a 9306E002 		li	a3,46
+ 1460 0f3e 2286     		mv	a2,s0
+ 1461 0f40 9305A00B 		li	a1,186
+ 1462 0f44 13054004 		li	a0,68
+ 1463 0f48 97000000 		call	display_char16_16
+ 1463      E7800000 
+ 1464              	.LVL188:
+ 329:../src/main.c **** 							display_char16_16(20+16*3,250-16*6 ,RED,49);
+ 1465              		.loc 1 329 0
+ 1466 0f50 93060003 		li	a3,48
+ 1467 0f54 2286     		mv	a2,s0
+ 1468 0f56 9305A00A 		li	a1,170
+ 1469 0f5a 13054004 		li	a0,68
+ 1470 0f5e 97000000 		call	display_char16_16
+ 1470      E7800000 
+ 1471              	.LVL189:
+ 330:../src/main.c **** 							display_char16_16(20+16*3,250-16*7 ,RED,23);//:
+ 1472              		.loc 1 330 0
+ 1473 0f66 93061003 		li	a3,49
+ 1474 0f6a 2286     		mv	a2,s0
+ 1475 0f6c 9305A009 		li	a1,154
+ 1476 0f70 13054004 		li	a0,68
+ 1477 0f74 97000000 		call	display_char16_16
+ 1477      E7800000 
+ 1478              	.LVL190:
+ 331:../src/main.c **** 							display_char16_16(20+16*3,250-16*8 ,RED,50);
+ 1479              		.loc 1 331 0
+ 1480 0f7c DD46     		li	a3,23
+ 1481 0f7e 2286     		mv	a2,s0
+ 1482 0f80 9305A008 		li	a1,138
+ 1483 0f84 13054004 		li	a0,68
+ 1484 0f88 97000000 		call	display_char16_16
+ 1484      E7800000 
+ 1485              	.LVL191:
+ 332:../src/main.c **** 							display_char16_16(20+16*3,250-16*9 ,RED,51);
+ 1486              		.loc 1 332 0
+ 1487 0f90 93062003 		li	a3,50
+ 1488 0f94 2286     		mv	a2,s0
+ 1489 0f96 9305A007 		li	a1,122
+ 1490 0f9a 13054004 		li	a0,68
+ 1491 0f9e 97000000 		call	display_char16_16
+ 1491      E7800000 
+ 1492              	.LVL192:
+ 333:../src/main.c **** 							display_char16_16(20+16*3,250-16*10,RED,54);
+ 1493              		.loc 1 333 0
+ 1494 0fa6 93063003 		li	a3,51
+ 1495 0faa 2286     		mv	a2,s0
+ 1496 0fac 9305A006 		li	a1,106
+ 1497 0fb0 13054004 		li	a0,68
+ 1498 0fb4 97000000 		call	display_char16_16
+ 1498      E7800000 
+ 1499              	.LVL193:
+ 334:../src/main.c **** 							//MODE2
+ 1500              		.loc 1 334 0
+ 1501 0fbc 93066003 		li	a3,54
+ 1502 0fc0 2286     		mv	a2,s0
+ 1503 0fc2 9305A005 		li	a1,90
+ 1504 0fc6 13054004 		li	a0,68
+ 1505 0fca 97000000 		call	display_char16_16
+ 1505      E7800000 
+ 1506              	.LVL194:
+ 336:../src/main.c **** 							display_char16_16(20+16*4,220-16*1 ,RED,53);
+ 1507              		.loc 1 336 0
+ 1508 0fd2 93064003 		li	a3,52
+ 1509 0fd6 2286     		mv	a2,s0
+ 1510 0fd8 9305C00D 		li	a1,220
+ 1511 0fdc 13054005 		li	a0,84
+ 1512 0fe0 97000000 		call	display_char16_16
+ 1512      E7800000 
+ 1513              	.LVL195:
+ 337:../src/main.c **** 							display_char16_16(20+16*4,220-16*2 ,RED,54);
+ 1514              		.loc 1 337 0
+ 1515 0fe8 93065003 		li	a3,53
+ 1516 0fec 2286     		mv	a2,s0
+ 1517 0fee 9305C00C 		li	a1,204
+ 1518 0ff2 13054005 		li	a0,84
+ 1519 0ff6 97000000 		call	display_char16_16
+ 1519      E7800000 
+ 1520              	.LVL196:
+ 338:../src/main.c **** 							display_char16_16(20+16*4,220-16*3 ,RED,23);//:
+ 1521              		.loc 1 338 0
+ 1522 0ffe 93066003 		li	a3,54
+ 1523 1002 2286     		mv	a2,s0
+ 1524 1004 9305C00B 		li	a1,188
+ 1525 1008 13054005 		li	a0,84
+ 1526 100c 97000000 		call	display_char16_16
+ 1526      E7800000 
+ 1527              	.LVL197:
+ 339:../src/main.c **** 							display_char16_16(20+16*4,220-16*4 ,RED,50);
+ 1528              		.loc 1 339 0
+ 1529 1014 DD46     		li	a3,23
+ 1530 1016 2286     		mv	a2,s0
+ 1531 1018 9305C00A 		li	a1,172
+ 1532 101c 13054005 		li	a0,84
+ 1533 1020 97000000 		call	display_char16_16
+ 1533      E7800000 
+ 1534              	.LVL198:
+ 340:../src/main.c **** 							display_char16_16(20+16*4,220-16*5 ,RED,52);
+ 1535              		.loc 1 340 0
+ 1536 1028 93062003 		li	a3,50
+ 1537 102c 2286     		mv	a2,s0
+ 1538 102e 9305C009 		li	a1,156
+ 1539 1032 13054005 		li	a0,84
+ 1540 1036 97000000 		call	display_char16_16
+ 1540      E7800000 
+ 1541              	.LVL199:
+ 341:../src/main.c **** 							display_char16_16(20+16*4,220-16*6 ,RED,54);
+ 1542              		.loc 1 341 0
+ 1543 103e 93064003 		li	a3,52
+ 1544 1042 2286     		mv	a2,s0
+ 1545 1044 9305C008 		li	a1,140
+ 1546 1048 13054005 		li	a0,84
+ 1547 104c 97000000 		call	display_char16_16
+ 1547      E7800000 
+ 1548              	.LVL200:
+ 342:../src/main.c **** 							display_char16_16(20+16*4,220-16*7 ,RED,23);//:
+ 1549              		.loc 1 342 0
+ 1550 1054 93066003 		li	a3,54
+ 1551 1058 2286     		mv	a2,s0
+ 1552 105a 9305C007 		li	a1,124
+ 1553 105e 13054005 		li	a0,84
+ 1554 1062 97000000 		call	display_char16_16
+ 1554      E7800000 
+ 1555              	.LVL201:
+ 343:../src/main.c **** 							display_char16_16(20+16*4,220-16*8 ,RED,80);
+ 1556              		.loc 1 343 0
+ 1557 106a DD46     		li	a3,23
+ 1558 106c 2286     		mv	a2,s0
+ 1559 106e 9305C006 		li	a1,108
+ 1560 1072 13054005 		li	a0,84
+ 1561 1076 97000000 		call	display_char16_16
+ 1561      E7800000 
+ 1562              	.LVL202:
+ 344:../src/main.c **** 							display_char16_16(20+16*4,220-16*9 ,RED,81);
+ 1563              		.loc 1 344 0
+ 1564 107e 93060005 		li	a3,80
+ 1565 1082 2286     		mv	a2,s0
+ 1566 1084 9305C005 		li	a1,92
+ 1567 1088 13054005 		li	a0,84
+ 1568 108c 97000000 		call	display_char16_16
+ 1568      E7800000 
+ 1569              	.LVL203:
+ 345:../src/main.c **** 							//5
+ 1570              		.loc 1 345 0
+ 1571 1094 93061005 		li	a3,81
+ 1572 1098 2286     		mv	a2,s0
+ 1573 109a 9305C004 		li	a1,76
+ 1574 109e 13054005 		li	a0,84
+ 1575 10a2 97000000 		call	display_char16_16
+ 1575      E7800000 
+ 1576              	.LVL204:
+ 347:../src/main.c **** 							display_char16_16(20+16*5,200-16*1 ,RED,22);
+ 1577              		.loc 1 347 0
+ 1578 10aa D546     		li	a3,21
+ 1579 10ac 2286     		mv	a2,s0
+ 1580 10ae 9305800C 		li	a1,200
+ 1581 10b2 13054006 		li	a0,100
+ 1582 10b6 97000000 		call	display_char16_16
+ 1582      E7800000 
+ 1583              	.LVL205:
+ 348:../src/main.c **** 							display_char16_16(20+16*5,200-16*2 ,RED,29);
+ 1584              		.loc 1 348 0
+ 1585 10be D946     		li	a3,22
+ 1586 10c0 2286     		mv	a2,s0
+ 1587 10c2 9305800B 		li	a1,184
+ 1588 10c6 13054006 		li	a0,100
+ 1589 10ca 97000000 		call	display_char16_16
+ 1589      E7800000 
+ 1590              	.LVL206:
+ 349:../src/main.c **** 							display_char16_16(20+16*5,200-16*3 ,RED,23);//:
+ 1591              		.loc 1 349 0
+ 1592 10d2 F546     		li	a3,29
+ 1593 10d4 2286     		mv	a2,s0
+ 1594 10d6 9305800A 		li	a1,168
+ 1595 10da 13054006 		li	a0,100
+ 1596 10de 97000000 		call	display_char16_16
+ 1596      E7800000 
+ 1597              	.LVL207:
+ 350:../src/main.c **** 							display_char16_16(20+16*5,200-16*4 ,RED,44);
+ 1598              		.loc 1 350 0
+ 1599 10e6 DD46     		li	a3,23
+ 1600 10e8 2286     		mv	a2,s0
+ 1601 10ea 93058009 		li	a1,152
+ 1602 10ee 13054006 		li	a0,100
+ 1603 10f2 97000000 		call	display_char16_16
+ 1603      E7800000 
+ 1604              	.LVL208:
+ 351:../src/main.c **** 							display_char16_16(20+16*5,200-16*5 ,RED,45);
+ 1605              		.loc 1 351 0
+ 1606 10fa 9306C002 		li	a3,44
+ 1607 10fe 2286     		mv	a2,s0
+ 1608 1100 93058008 		li	a1,136
+ 1609 1104 13054006 		li	a0,100
+ 1610 1108 97000000 		call	display_char16_16
+ 1610      E7800000 
+ 1611              	.LVL209:
+ 352:../src/main.c **** 							display_char16_16(20+16*5,200-16*6 ,RED,55);
+ 1612              		.loc 1 352 0
+ 1613 1110 9306D002 		li	a3,45
+ 1614 1114 2286     		mv	a2,s0
+ 1615 1116 93058007 		li	a1,120
+ 1616 111a 13054006 		li	a0,100
+ 1617 111e 97000000 		call	display_char16_16
+ 1617      E7800000 
+ 1618              	.LVL210:
+ 353:../src/main.c **** 							display_char16_16(20+16*5,200-16*7 ,RED,56);
+ 1619              		.loc 1 353 0
+ 1620 1126 93067003 		li	a3,55
+ 1621 112a 2286     		mv	a2,s0
+ 1622 112c 93058006 		li	a1,104
+ 1623 1130 13054006 		li	a0,100
+ 1624 1134 97000000 		call	display_char16_16
+ 1624      E7800000 
+ 1625              	.LVL211:
+ 354:../src/main.c **** 							display_char16_16(20+16*5,200-16*8 ,RED,77);
+ 1626              		.loc 1 354 0
+ 1627 113c 93068003 		li	a3,56
+ 1628 1140 2286     		mv	a2,s0
+ 1629 1142 93058005 		li	a1,88
+ 1630 1146 13054006 		li	a0,100
+ 1631 114a 97000000 		call	display_char16_16
+ 1631      E7800000 
+ 1632              	.LVL212:
+ 355:../src/main.c **** 							display_char16_16(20+16*5,200-16*9 ,RED,78);
+ 1633              		.loc 1 355 0
+ 1634 1152 9306D004 		li	a3,77
+ 1635 1156 2286     		mv	a2,s0
+ 1636 1158 93058004 		li	a1,72
+ 1637 115c 13054006 		li	a0,100
+ 1638 1160 97000000 		call	display_char16_16
+ 1638      E7800000 
+ 1639              	.LVL213:
+ 356:../src/main.c **** 							//CHANNEL
+ 1640              		.loc 1 356 0
+ 1641 1168 9306E004 		li	a3,78
+ 1642 116c 2286     		mv	a2,s0
+ 1643 116e 93058003 		li	a1,56
+ 1644 1172 13054006 		li	a0,100
+ 1645 1176 97000000 		call	display_char16_16
+ 1645      E7800000 
+ 1646              	.LVL214:
+ 358:../src/main.c **** 							display_char16_16(20+16*6,200-16*1 ,RED,56);
+ 1647              		.loc 1 358 0
+ 1648 117e 93067003 		li	a3,55
+ 1649 1182 2286     		mv	a2,s0
+ 1650 1184 9305800C 		li	a1,200
+ 1651 1188 13054007 		li	a0,116
+ 1652 118c 97000000 		call	display_char16_16
+ 1652      E7800000 
+ 1653              	.LVL215:
+ 359:../src/main.c **** 							display_char16_16(20+16*6,200-16*2 ,RED,25);
+ 1654              		.loc 1 359 0
+ 1655 1194 93068003 		li	a3,56
+ 1656 1198 2286     		mv	a2,s0
+ 1657 119a 9305800B 		li	a1,184
+ 1658 119e 13054007 		li	a0,116
+ 1659 11a2 97000000 		call	display_char16_16
+ 1659      E7800000 
+ 1660              	.LVL216:
+ 360:../src/main.c **** 							display_char16_16(20+16*6,200-16*3 ,RED,23);//:
+ 1661              		.loc 1 360 0
+ 1662 11aa E546     		li	a3,25
+ 1663 11ac 2286     		mv	a2,s0
+ 1664 11ae 9305800A 		li	a1,168
+ 1665 11b2 13054007 		li	a0,116
+ 1666 11b6 97000000 		call	display_char16_16
+ 1666      E7800000 
+ 1667              	.LVL217:
+ 361:../src/main.c **** 							display_char16_16(20+16*6,200-16*4 ,RED,32);
+ 1668              		.loc 1 361 0
+ 1669 11be DD46     		li	a3,23
+ 1670 11c0 2286     		mv	a2,s0
+ 1671 11c2 93058009 		li	a1,152
+ 1672 11c6 13054007 		li	a0,116
+ 1673 11ca 97000000 		call	display_char16_16
+ 1673      E7800000 
+ 1674              	.LVL218:
+ 362:../src/main.c **** 							//6
+ 1675              		.loc 1 362 0
+ 1676 11d2 93060002 		li	a3,32
+ 1677 11d6 2286     		mv	a2,s0
+ 1678 11d8 93058008 		li	a1,136
+ 1679 11dc 13054007 		li	a0,116
+ 1680 11e0 97000000 		call	display_char16_16
+ 1680      E7800000 
+ 1681              	.LVL219:
+ 364:../src/main.c **** 							display_char16_16(20+16*7,200-16*1 ,RED,22);
+ 1682              		.loc 1 364 0
+ 1683 11e8 D546     		li	a3,21
+ 1684 11ea 2286     		mv	a2,s0
+ 1685 11ec 9305800C 		li	a1,200
+ 1686 11f0 13054008 		li	a0,132
+ 1687 11f4 97000000 		call	display_char16_16
+ 1687      E7800000 
+ 1688              	.LVL220:
+ 365:../src/main.c **** 							display_char16_16(20+16*7,200-16*2 ,RED,30);
+ 1689              		.loc 1 365 0
+ 1690 11fc D946     		li	a3,22
+ 1691 11fe 2286     		mv	a2,s0
+ 1692 1200 9305800B 		li	a1,184
+ 1693 1204 13054008 		li	a0,132
+ 1694 1208 97000000 		call	display_char16_16
+ 1694      E7800000 
+ 1695              	.LVL221:
+ 366:../src/main.c **** 							display_char16_16(20+16*7,200-16*3 ,RED,23);//:
+ 1696              		.loc 1 366 0
+ 1697 1210 F946     		li	a3,30
+ 1698 1212 2286     		mv	a2,s0
+ 1699 1214 9305800A 		li	a1,168
+ 1700 1218 13054008 		li	a0,132
+ 1701 121c 97000000 		call	display_char16_16
+ 1701      E7800000 
+ 1702              	.LVL222:
+ 367:../src/main.c **** 							display_char16_16(20+16*7,200-16*4 ,RED,57);
+ 1703              		.loc 1 367 0
+ 1704 1224 DD46     		li	a3,23
+ 1705 1226 2286     		mv	a2,s0
+ 1706 1228 93058009 		li	a1,152
+ 1707 122c 13054008 		li	a0,132
+ 1708 1230 97000000 		call	display_char16_16
+ 1708      E7800000 
+ 1709              	.LVL223:
+ 368:../src/main.c **** 							display_char16_16(20+16*7,200-16*5 ,RED,58);
+ 1710              		.loc 1 368 0
+ 1711 1238 93069003 		li	a3,57
+ 1712 123c 2286     		mv	a2,s0
+ 1713 123e 93058008 		li	a1,136
+ 1714 1242 13054008 		li	a0,132
+ 1715 1246 97000000 		call	display_char16_16
+ 1715      E7800000 
+ 1716              	.LVL224:
+ 369:../src/main.c **** 							display_char16_16(20+16*7,200-16*6 ,RED,59);
+ 1717              		.loc 1 369 0
+ 1718 124e 9306A003 		li	a3,58
+ 1719 1252 2286     		mv	a2,s0
+ 1720 1254 93058007 		li	a1,120
+ 1721 1258 13054008 		li	a0,132
+ 1722 125c 97000000 		call	display_char16_16
+ 1722      E7800000 
+ 1723              	.LVL225:
+ 370:../src/main.c **** 							display_char16_16(20+16*7,200-16*7 ,RED,60);
+ 1724              		.loc 1 370 0
+ 1725 1264 9306B003 		li	a3,59
+ 1726 1268 2286     		mv	a2,s0
+ 1727 126a 93058006 		li	a1,104
+ 1728 126e 13054008 		li	a0,132
+ 1729 1272 97000000 		call	display_char16_16
+ 1729      E7800000 
+ 1730              	.LVL226:
+ 371:../src/main.c **** 							display_char16_16(20+16*7,200-16*8 ,RED,44);
+ 1731              		.loc 1 371 0
+ 1732 127a 9306C003 		li	a3,60
+ 1733 127e 2286     		mv	a2,s0
+ 1734 1280 93058005 		li	a1,88
+ 1735 1284 13054008 		li	a0,132
+ 1736 1288 97000000 		call	display_char16_16
+ 1736      E7800000 
+ 1737              	.LVL227:
+ 372:../src/main.c **** 							display_char16_16(20+16*7,200-16*9 ,RED,45);
+ 1738              		.loc 1 372 0
+ 1739 1290 9306C002 		li	a3,44
+ 1740 1294 2286     		mv	a2,s0
+ 1741 1296 93058004 		li	a1,72
+ 1742 129a 13054008 		li	a0,132
+ 1743 129e 97000000 		call	display_char16_16
+ 1743      E7800000 
+ 1744              	.LVL228:
+ 373:../src/main.c **** 							clear_flag = 5;
+ 1745              		.loc 1 373 0
+ 1746 12a6 9306D002 		li	a3,45
+ 1747 12aa 2286     		mv	a2,s0
+ 1748 12ac 93058003 		li	a1,56
+ 1749 12b0 13054008 		li	a0,132
+ 1750 12b4 97000000 		call	display_char16_16
+ 1750      E7800000 
+ 1751              	.LVL229:
+ 374:../src/main.c **** 						}
+ 1752              		.loc 1 374 0
+ 1753 12bc 9546     		li	a3,5
+ 1754 12be 6FE0FFDC 		j	.L2
+ 1755              	.LVL230:
+ 1756              	.L44:
+ 112:../src/main.c **** 							TFT_full(WHITE);
+ 1757              		.loc 1 112 0
+ 1758 12c2 6394E600 		beq	a3,a4,.L2
+ 1758      6FE07FDC 
+ 113:../src/main.c **** 							//OSP
+ 1759              		.loc 1 113 0
+ 1760 12ca 5285     		mv	a0,s4
+ 1761 12cc 97000000 		call	TFT_full
+ 1761      E7800000 
+ 1762              	.LVL231:
+ 115:../src/main.c **** 							display_char16_16(80+16*0,200-16*1 ,RED,9 );
+ 1763              		.loc 1 115 0
+ 1764 12d4 A146     		li	a3,8
+ 1765 12d6 2286     		mv	a2,s0
+ 1766 12d8 9305800C 		li	a1,200
+ 1767 12dc 13050005 		li	a0,80
+ 1768 12e0 97000000 		call	display_char16_16
+ 1768      E7800000 
+ 1769              	.LVL232:
+ 116:../src/main.c **** 							display_char16_16(80+16*0,200-16*2 ,RED,10);
+ 1770              		.loc 1 116 0
+ 1771 12e8 A546     		li	a3,9
+ 1772 12ea 2286     		mv	a2,s0
+ 1773 12ec 9305800B 		li	a1,184
+ 1774 12f0 13050005 		li	a0,80
+ 1775 12f4 97000000 		call	display_char16_16
+ 1775      E7800000 
+ 1776              	.LVL233:
+ 117:../src/main.c **** 							//3
+ 1777              		.loc 1 117 0
+ 1778 12fc A946     		li	a3,10
+ 1779 12fe 2286     		mv	a2,s0
+ 1780 1300 9305800A 		li	a1,168
+ 1781 1304 13050005 		li	a0,80
+ 1782 1308 97000000 		call	display_char16_16
+ 1782      E7800000 
+ 1783              	.LVL234:
+ 119:../src/main.c **** 							display_char16_16(80+16*1,200-16*1 ,RED,22);
+ 1784              		.loc 1 119 0
+ 1785 1310 D546     		li	a3,21
+ 1786 1312 2286     		mv	a2,s0
+ 1787 1314 9305800C 		li	a1,200
+ 1788 1318 13050006 		li	a0,96
+ 1789 131c 97000000 		call	display_char16_16
+ 1789      E7800000 
+ 1790              	.LVL235:
+ 120:../src/main.c **** 							display_char16_16(80+16*1,200-16*2 ,RED,27);
+ 1791              		.loc 1 120 0
+ 1792 1324 D946     		li	a3,22
+ 1793 1326 2286     		mv	a2,s0
+ 1794 1328 9305800B 		li	a1,184
+ 1795 132c 13050006 		li	a0,96
+ 1796 1330 97000000 		call	display_char16_16
+ 1796      E7800000 
+ 1797              	.LVL236:
+ 121:../src/main.c **** 							display_char16_16(80+16*1,200-16*3 ,RED,23);//:
+ 1798              		.loc 1 121 0
+ 1799 1338 ED46     		li	a3,27
+ 1800 133a 2286     		mv	a2,s0
+ 1801 133c 9305800A 		li	a1,168
+ 1802 1340 13050006 		li	a0,96
+ 1803 1344 97000000 		call	display_char16_16
+ 1803      E7800000 
+ 1804              	.LVL237:
+ 122:../src/main.c **** 							display_char16_16(80+16*1,200-16*4 ,RED,35);
+ 1805              		.loc 1 122 0
+ 1806 134c DD46     		li	a3,23
+ 1807 134e 2286     		mv	a2,s0
+ 1808 1350 93058009 		li	a1,152
+ 1809 1354 13050006 		li	a0,96
+ 1810 1358 97000000 		call	display_char16_16
+ 1810      E7800000 
+ 1811              	.LVL238:
+ 123:../src/main.c **** 							display_char16_16(80+16*1,200-16*5 ,RED,36);
+ 1812              		.loc 1 123 0
+ 1813 1360 93063002 		li	a3,35
+ 1814 1364 2286     		mv	a2,s0
+ 1815 1366 93058008 		li	a1,136
+ 1816 136a 13050006 		li	a0,96
+ 1817 136e 97000000 		call	display_char16_16
+ 1817      E7800000 
+ 1818              	.LVL239:
+ 124:../src/main.c **** 							display_char16_16(80+16*1,200-16*6 ,RED,23);//:
+ 1819              		.loc 1 124 0
+ 1820 1376 93064002 		li	a3,36
+ 1821 137a 2286     		mv	a2,s0
+ 1822 137c 93058007 		li	a1,120
+ 1823 1380 13050006 		li	a0,96
+ 1824 1384 97000000 		call	display_char16_16
+ 1824      E7800000 
+ 1825              	.LVL240:
+ 125:../src/main.c **** 							display_char16_16(80+16*1,200-16*7 ,RED,37);
+ 1826              		.loc 1 125 0
+ 1827 138c DD46     		li	a3,23
+ 1828 138e 2286     		mv	a2,s0
+ 1829 1390 93058006 		li	a1,104
+ 1830 1394 13050006 		li	a0,96
+ 1831 1398 97000000 		call	display_char16_16
+ 1831      E7800000 
+ 1832              	.LVL241:
+ 126:../src/main.c **** 							display_char16_16(80+16*1,200-16*8 ,RED,38);
+ 1833              		.loc 1 126 0
+ 1834 13a0 93065002 		li	a3,37
+ 1835 13a4 2286     		mv	a2,s0
+ 1836 13a6 93058005 		li	a1,88
+ 1837 13aa 13050006 		li	a0,96
+ 1838 13ae 97000000 		call	display_char16_16
+ 1838      E7800000 
+ 1839              	.LVL242:
+ 127:../src/main.c **** 							display_char16_16(80+16*1,200-16*9 ,RED,39);
+ 1840              		.loc 1 127 0
+ 1841 13b6 93066002 		li	a3,38
+ 1842 13ba 2286     		mv	a2,s0
+ 1843 13bc 93058004 		li	a1,72
+ 1844 13c0 13050006 		li	a0,96
+ 1845 13c4 97000000 		call	display_char16_16
+ 1845      E7800000 
+ 1846              	.LVL243:
+ 128:../src/main.c **** 							//4
+ 1847              		.loc 1 128 0
+ 1848 13cc 93067002 		li	a3,39
+ 1849 13d0 2286     		mv	a2,s0
+ 1850 13d2 93058003 		li	a1,56
+ 1851 13d6 13050006 		li	a0,96
+ 1852 13da 97000000 		call	display_char16_16
+ 1852      E7800000 
+ 1853              	.LVL244:
+ 130:../src/main.c **** 							display_char16_16(80+16*2,200-16*1 ,RED,22);
+ 1854              		.loc 1 130 0
+ 1855 13e2 D546     		li	a3,21
+ 1856 13e4 2286     		mv	a2,s0
+ 1857 13e6 9305800C 		li	a1,200
+ 1858 13ea 13050007 		li	a0,112
+ 1859 13ee 97000000 		call	display_char16_16
+ 1859      E7800000 
+ 1860              	.LVL245:
+ 131:../src/main.c **** 							display_char16_16(80+16*2,200-16*2 ,RED,28);
+ 1861              		.loc 1 131 0
+ 1862 13f6 D946     		li	a3,22
+ 1863 13f8 2286     		mv	a2,s0
+ 1864 13fa 9305800B 		li	a1,184
+ 1865 13fe 13050007 		li	a0,112
+ 1866 1402 97000000 		call	display_char16_16
+ 1866      E7800000 
+ 1867              	.LVL246:
+ 132:../src/main.c **** 							display_char16_16(80+16*2,200-16*3 ,RED,23);//:
+ 1868              		.loc 1 132 0
+ 1869 140a F146     		li	a3,28
+ 1870 140c 2286     		mv	a2,s0
+ 1871 140e 9305800A 		li	a1,168
+ 1872 1412 13050007 		li	a0,112
+ 1873 1416 97000000 		call	display_char16_16
+ 1873      E7800000 
+ 1874              	.LVL247:
+ 133:../src/main.c **** 							display_char16_16(80+16*2,200-16*4 ,RED,40);
+ 1875              		.loc 1 133 0
+ 1876 141e DD46     		li	a3,23
+ 1877 1420 2286     		mv	a2,s0
+ 1878 1422 93058009 		li	a1,152
+ 1879 1426 13050007 		li	a0,112
+ 1880 142a 97000000 		call	display_char16_16
+ 1880      E7800000 
+ 1881              	.LVL248:
+ 134:../src/main.c **** 							display_char16_16(80+16*2,200-16*5 ,RED,41);
+ 1882              		.loc 1 134 0
+ 1883 1432 93068002 		li	a3,40
+ 1884 1436 2286     		mv	a2,s0
+ 1885 1438 93058008 		li	a1,136
+ 1886 143c 13050007 		li	a0,112
+ 1887 1440 97000000 		call	display_char16_16
+ 1887      E7800000 
+ 1888              	.LVL249:
+ 135:../src/main.c **** 							//5
+ 1889              		.loc 1 135 0
+ 1890 1448 93069002 		li	a3,41
+ 1891 144c 2286     		mv	a2,s0
+ 1892 144e 93058007 		li	a1,120
+ 1893 1452 13050007 		li	a0,112
+ 1894 1456 97000000 		call	display_char16_16
+ 1894      E7800000 
+ 1895              	.LVL250:
+ 137:../src/main.c **** 							display_char16_16(80+16*3,200-16*1 ,RED,22);
+ 1896              		.loc 1 137 0
+ 1897 145e D546     		li	a3,21
+ 1898 1460 2286     		mv	a2,s0
+ 1899 1462 9305800C 		li	a1,200
+ 1900 1466 13050008 		li	a0,128
+ 1901 146a 97000000 		call	display_char16_16
+ 1901      E7800000 
+ 1902              	.LVL251:
+ 138:../src/main.c **** 							display_char16_16(80+16*3,200-16*2 ,RED,29);
+ 1903              		.loc 1 138 0
+ 1904 1472 D946     		li	a3,22
+ 1905 1474 2286     		mv	a2,s0
+ 1906 1476 9305800B 		li	a1,184
+ 1907 147a 13050008 		li	a0,128
+ 1908 147e 97000000 		call	display_char16_16
+ 1908      E7800000 
+ 1909              	.LVL252:
+ 139:../src/main.c **** 							display_char16_16(80+16*3,200-16*3 ,RED,23);//:
+ 1910              		.loc 1 139 0
+ 1911 1486 F546     		li	a3,29
+ 1912 1488 2286     		mv	a2,s0
+ 1913 148a 9305800A 		li	a1,168
+ 1914 148e 13050008 		li	a0,128
+ 1915 1492 97000000 		call	display_char16_16
+ 1915      E7800000 
+ 1916              	.LVL253:
+ 140:../src/main.c **** 							display_char16_16(80+16*3,200-16*4 ,RED,42);
+ 1917              		.loc 1 140 0
+ 1918 149a DD46     		li	a3,23
+ 1919 149c 2286     		mv	a2,s0
+ 1920 149e 93058009 		li	a1,152
+ 1921 14a2 13050008 		li	a0,128
+ 1922 14a6 97000000 		call	display_char16_16
+ 1922      E7800000 
+ 1923              	.LVL254:
+ 141:../src/main.c **** 							display_char16_16(80+16*3,200-16*5 ,RED,43);
+ 1924              		.loc 1 141 0
+ 1925 14ae 9306A002 		li	a3,42
+ 1926 14b2 2286     		mv	a2,s0
+ 1927 14b4 93058008 		li	a1,136
+ 1928 14b8 13050008 		li	a0,128
+ 1929 14bc 97000000 		call	display_char16_16
+ 1929      E7800000 
+ 1930              	.LVL255:
+ 142:../src/main.c **** 							clear_flag = 3;
+ 1931              		.loc 1 142 0
+ 1932 14c4 9306B002 		li	a3,43
+ 1933 14c8 2286     		mv	a2,s0
+ 1934 14ca 93058007 		li	a1,120
+ 1935 14ce 13050008 		li	a0,128
+ 1936 14d2 97000000 		call	display_char16_16
+ 1936      E7800000 
+ 1937              	.LVL256:
+ 143:../src/main.c **** 						}
+ 1938              		.loc 1 143 0
+ 1939 14da 8D46     		li	a3,3
+ 1940 14dc 6FE01FBB 		j	.L2
+ 1941              	.LVL257:
+ 1942              	.L9:
+  88:../src/main.c **** 							TFT_full(WHITE);
+ 1943              		.loc 1 88 0
+ 1944 14e0 63873601 		beq	a3,s3,.L11
+  89:../src/main.c **** 							clear_flag = 1;
+ 1945              		.loc 1 89 0
+ 1946 14e4 5285     		mv	a0,s4
+ 1947 14e6 97000000 		call	TFT_full
+ 1947      E7800000 
+ 1948              	.LVL258:
+ 1949              	.L11:
+  92:../src/main.c **** 						break;
+ 1950              		.loc 1 92 0
+ 1951 14ee A285     		mv	a1,s0
+ 1952 14f0 5285     		mv	a0,s4
+ 1953 14f2 97000000 		call	TFT_show
+ 1953      E7800000 
+ 1954              	.LVL259:
+  93:../src/main.c **** 					case 2://UPPER_COMPUTER
+ 1955              		.loc 1 93 0
+ 1956 14fa 8546     		li	a3,1
+ 1957 14fc 6FE01FB9 		j	.L2
+ 1958              	.LVL260:
+ 1959              	.L32:
+ 248:../src/main.c **** 							{
+ 1960              		.loc 1 248 0
+ 1961 1500 9146     		li	a3,4
+ 1962 1502 6FE0BFB8 		j	.L2
+ 1963              		.cfi_endproc
+ 1964              	.LFE1:
+ 1966              		.globl	temp_data
+ 1967              		.section	.sbss.temp_data,"aw",@nobits
+ 1970              	temp_data:
+ 1971 0000 00       		.zero	1
+ 1972              		.text
+ 1973              	.Letext0:
+ 1974              		.file 2 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+ 1975              		.file 3 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+ 1976              		.file 4 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+ 1977              		.file 5 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+ 1978              		.file 6 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+ 1979              		.file 7 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+ 1980              		.file 8 "../src/gmt024_spi.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10     .text.startup.main:0000000000000000 main
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:14     .text.startup.main:0000000000000000 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:16     .text.startup.main:0000000000000000 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:17     .text.startup.main:0000000000000002 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:24     .text.startup.main:000000000000000e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:25     .text.startup.main:000000000000000e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:26     .text.startup.main:000000000000000e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:27     .text.startup.main:000000000000000e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:28     .text.startup.main:000000000000000e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:29     .text.startup.main:000000000000000e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:31     .text.startup.main:000000000000000e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:33     .text.startup.main:0000000000000010 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:37     .text.startup.main:0000000000000018 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:38     .text.startup.main:0000000000000018 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:39     .text.startup.main:0000000000000018 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:40     .text.startup.main:0000000000000018 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:42     .text.startup.main:0000000000000018 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:45     .text.startup.main:0000000000000020 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:47     .text.startup.main:0000000000000024 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:50     .text.startup.main:000000000000002a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:53     .text.startup.main:0000000000000032 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:56     .text.startup.main:000000000000003a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:58     .text.startup.main:000000000000003e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:61     .text.startup.main:0000000000000046 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:64     .text.startup.main:000000000000004e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:67     .text.startup.main:0000000000000056 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:69     .text.startup.main:000000000000005a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:71     .text.startup.main:000000000000005e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:73     .text.startup.main:0000000000000060 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:76     .text.startup.main:0000000000000068 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:78     .text.startup.main:000000000000006c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:80     .text.startup.main:000000000000006e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:82     .text.startup.main:0000000000000072 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:87     .text.startup.main:0000000000000082 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:89     .text.startup.main:0000000000000084 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:91     .text.startup.main:0000000000000086 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:93     .text.startup.main:000000000000008a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:97     .text.startup.main:000000000000008c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:105    .text.startup.main:000000000000009e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:107    .text.startup.main:00000000000000a0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:111    .text.startup.main:00000000000000aa .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:118    .text.startup.main:00000000000000be .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:125    .text.startup.main:00000000000000d2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:132    .text.startup.main:00000000000000e6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:139    .text.startup.main:00000000000000fa .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:146    .text.startup.main:000000000000010e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:153    .text.startup.main:0000000000000122 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:160    .text.startup.main:0000000000000136 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:167    .text.startup.main:000000000000014a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:174    .text.startup.main:000000000000015e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:181    .text.startup.main:0000000000000172 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:188    .text.startup.main:0000000000000186 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:195    .text.startup.main:000000000000019a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:202    .text.startup.main:00000000000001ae .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:209    .text.startup.main:00000000000001c2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:216    .text.startup.main:00000000000001d6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:223    .text.startup.main:00000000000001ea .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:230    .text.startup.main:00000000000001fe .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:237    .text.startup.main:0000000000000212 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:244    .text.startup.main:0000000000000226 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:251    .text.startup.main:000000000000023a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:258    .text.startup.main:000000000000024e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:265    .text.startup.main:0000000000000262 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:272    .text.startup.main:0000000000000276 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:279    .text.startup.main:000000000000028a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:286    .text.startup.main:000000000000029e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:293    .text.startup.main:00000000000002b2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:300    .text.startup.main:00000000000002c6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:307    .text.startup.main:00000000000002da .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:314    .text.startup.main:00000000000002ee .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:321    .text.startup.main:0000000000000304 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:328    .text.startup.main:000000000000031a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:335    .text.startup.main:0000000000000330 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:342    .text.startup.main:0000000000000346 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:344    .text.startup.main:0000000000000348 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:347    .text.startup.main:000000000000034a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:351    .text.startup.main:0000000000000350 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:357    .text.startup.main:000000000000035e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:359    .text.startup.main:0000000000000362 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:363    .text.startup.main:000000000000036c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:370    .text.startup.main:000000000000037e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:377    .text.startup.main:0000000000000390 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:384    .text.startup.main:00000000000003a2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:391    .text.startup.main:00000000000003b4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:398    .text.startup.main:00000000000003c6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:405    .text.startup.main:00000000000003dc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:412    .text.startup.main:00000000000003f2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:419    .text.startup.main:0000000000000408 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:426    .text.startup.main:000000000000041e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:433    .text.startup.main:0000000000000434 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:440    .text.startup.main:0000000000000448 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:447    .text.startup.main:000000000000045c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:454    .text.startup.main:0000000000000470 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:461    .text.startup.main:0000000000000484 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:468    .text.startup.main:000000000000049a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:475    .text.startup.main:00000000000004b0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:482    .text.startup.main:00000000000004c6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:489    .text.startup.main:00000000000004dc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:496    .text.startup.main:00000000000004f2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:503    .text.startup.main:0000000000000508 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:510    .text.startup.main:000000000000051c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:517    .text.startup.main:0000000000000530 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:524    .text.startup.main:0000000000000544 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:531    .text.startup.main:0000000000000558 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:538    .text.startup.main:000000000000056e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:545    .text.startup.main:0000000000000584 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:552    .text.startup.main:000000000000059a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:559    .text.startup.main:00000000000005b0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:566    .text.startup.main:00000000000005c6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:573    .text.startup.main:00000000000005dc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:580    .text.startup.main:00000000000005f0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:587    .text.startup.main:0000000000000604 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:594    .text.startup.main:0000000000000618 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:601    .text.startup.main:000000000000062c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:608    .text.startup.main:0000000000000642 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:615    .text.startup.main:0000000000000658 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:622    .text.startup.main:000000000000066e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:629    .text.startup.main:0000000000000684 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:636    .text.startup.main:000000000000069a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:644    .text.startup.main:00000000000006b0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:651    .text.startup.main:00000000000006c6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:658    .text.startup.main:00000000000006dc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:665    .text.startup.main:00000000000006f0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:687    .text.startup.main:0000000000000702 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:693    .text.startup.main:0000000000000710 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:695    .text.startup.main:0000000000000714 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:699    .text.startup.main:000000000000071e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:706    .text.startup.main:0000000000000732 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:713    .text.startup.main:0000000000000746 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:720    .text.startup.main:000000000000075a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:727    .text.startup.main:0000000000000770 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:734    .text.startup.main:0000000000000786 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:741    .text.startup.main:000000000000079c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:748    .text.startup.main:00000000000007b2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:755    .text.startup.main:00000000000007c8 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:760    .text.startup.main:00000000000007cc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:763    .text.startup.main:00000000000007d2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:767    .text.startup.main:00000000000007dc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:774    .text.startup.main:00000000000007f0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:781    .text.startup.main:0000000000000804 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:788    .text.startup.main:0000000000000818 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:795    .text.startup.main:000000000000082c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:802    .text.startup.main:0000000000000840 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:809    .text.startup.main:0000000000000854 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:816    .text.startup.main:0000000000000868 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:823    .text.startup.main:000000000000087c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:830    .text.startup.main:0000000000000890 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:837    .text.startup.main:00000000000008a6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:844    .text.startup.main:00000000000008bc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:851    .text.startup.main:00000000000008d2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:858    .text.startup.main:00000000000008e8 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:865    .text.startup.main:00000000000008fc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:872    .text.startup.main:0000000000000910 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:879    .text.startup.main:0000000000000924 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:886    .text.startup.main:0000000000000938 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:893    .text.startup.main:000000000000094e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:900    .text.startup.main:0000000000000964 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:907    .text.startup.main:000000000000097a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:914    .text.startup.main:0000000000000990 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:921    .text.startup.main:00000000000009a4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:928    .text.startup.main:00000000000009b8 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:935    .text.startup.main:00000000000009cc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:942    .text.startup.main:00000000000009e0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:949    .text.startup.main:00000000000009f6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:956    .text.startup.main:0000000000000a0c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:963    .text.startup.main:0000000000000a22 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:970    .text.startup.main:0000000000000a38 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:975    .text.startup.main:0000000000000a3e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:982    .text.startup.main:0000000000000a54 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:990    .text.startup.main:0000000000000a6a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:998    .text.startup.main:0000000000000a80 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1005   .text.startup.main:0000000000000a96 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1012   .text.startup.main:0000000000000aac .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1019   .text.startup.main:0000000000000ac0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1028   .text.startup.main:0000000000000ad2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1033   .text.startup.main:0000000000000ae0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1049   .text.startup.main:0000000000000ae2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1056   .text.startup.main:0000000000000af8 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1061   .text.startup.main:0000000000000b00 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1068   .text.startup.main:0000000000000b16 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1073   .text.startup.main:0000000000000b1e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1077   .text.startup.main:0000000000000b24 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1082   .text.startup.main:0000000000000b34 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1089   .text.startup.main:0000000000000b4a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1096   .text.startup.main:0000000000000b60 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1099   .text.startup.main:0000000000000b62 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1106   .text.startup.main:0000000000000b78 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1113   .text.startup.main:0000000000000b8e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1120   .text.startup.main:0000000000000ba4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1123   .text.startup.main:0000000000000ba6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1128   .text.startup.main:0000000000000bae .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1131   .text.startup.main:0000000000000bb6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1138   .text.startup.main:0000000000000bcc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1141   .text.startup.main:0000000000000bce .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1147   .text.startup.main:0000000000000be0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1151   .text.startup.main:0000000000000be6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1154   .text.startup.main:0000000000000bee .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1161   .text.startup.main:0000000000000c04 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1165   .text.startup.main:0000000000000c08 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1168   .text.startup.main:0000000000000c10 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1175   .text.startup.main:0000000000000c26 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1179   .text.startup.main:0000000000000c2a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1182   .text.startup.main:0000000000000c32 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1189   .text.startup.main:0000000000000c48 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1193   .text.startup.main:0000000000000c4c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1196   .text.startup.main:0000000000000c54 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1203   .text.startup.main:0000000000000c6a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1207   .text.startup.main:0000000000000c6e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1210   .text.startup.main:0000000000000c76 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1217   .text.startup.main:0000000000000c8c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1221   .text.startup.main:0000000000000c90 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1224   .text.startup.main:0000000000000c98 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1231   .text.startup.main:0000000000000cae .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1235   .text.startup.main:0000000000000cb2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1238   .text.startup.main:0000000000000cba .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1245   .text.startup.main:0000000000000cd0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1250   .text.startup.main:0000000000000cd6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1252   .text.startup.main:0000000000000cda .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1256   .text.startup.main:0000000000000ce4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1263   .text.startup.main:0000000000000cf6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1270   .text.startup.main:0000000000000d08 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1277   .text.startup.main:0000000000000d1a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1284   .text.startup.main:0000000000000d2c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1291   .text.startup.main:0000000000000d3e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1298   .text.startup.main:0000000000000d52 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1305   .text.startup.main:0000000000000d66 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1312   .text.startup.main:0000000000000d7a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1319   .text.startup.main:0000000000000d8e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1326   .text.startup.main:0000000000000da4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1333   .text.startup.main:0000000000000dba .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1340   .text.startup.main:0000000000000dce .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1347   .text.startup.main:0000000000000de4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1354   .text.startup.main:0000000000000dfa .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1361   .text.startup.main:0000000000000e10 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1368   .text.startup.main:0000000000000e24 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1375   .text.startup.main:0000000000000e38 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1382   .text.startup.main:0000000000000e4c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1389   .text.startup.main:0000000000000e60 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1396   .text.startup.main:0000000000000e76 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1403   .text.startup.main:0000000000000e8c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1410   .text.startup.main:0000000000000ea2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1417   .text.startup.main:0000000000000eb8 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1424   .text.startup.main:0000000000000ece .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1431   .text.startup.main:0000000000000ee4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1438   .text.startup.main:0000000000000efa .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1445   .text.startup.main:0000000000000f10 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1452   .text.startup.main:0000000000000f26 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1459   .text.startup.main:0000000000000f3a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1466   .text.startup.main:0000000000000f50 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1473   .text.startup.main:0000000000000f66 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1480   .text.startup.main:0000000000000f7c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1487   .text.startup.main:0000000000000f90 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1494   .text.startup.main:0000000000000fa6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1501   .text.startup.main:0000000000000fbc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1508   .text.startup.main:0000000000000fd2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1515   .text.startup.main:0000000000000fe8 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1522   .text.startup.main:0000000000000ffe .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1529   .text.startup.main:0000000000001014 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1536   .text.startup.main:0000000000001028 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1543   .text.startup.main:000000000000103e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1550   .text.startup.main:0000000000001054 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1557   .text.startup.main:000000000000106a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1564   .text.startup.main:000000000000107e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1571   .text.startup.main:0000000000001094 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1578   .text.startup.main:00000000000010aa .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1585   .text.startup.main:00000000000010be .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1592   .text.startup.main:00000000000010d2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1599   .text.startup.main:00000000000010e6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1606   .text.startup.main:00000000000010fa .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1613   .text.startup.main:0000000000001110 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1620   .text.startup.main:0000000000001126 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1627   .text.startup.main:000000000000113c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1634   .text.startup.main:0000000000001152 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1641   .text.startup.main:0000000000001168 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1648   .text.startup.main:000000000000117e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1655   .text.startup.main:0000000000001194 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1662   .text.startup.main:00000000000011aa .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1669   .text.startup.main:00000000000011be .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1676   .text.startup.main:00000000000011d2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1683   .text.startup.main:00000000000011e8 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1690   .text.startup.main:00000000000011fc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1697   .text.startup.main:0000000000001210 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1704   .text.startup.main:0000000000001224 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1711   .text.startup.main:0000000000001238 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1718   .text.startup.main:000000000000124e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1725   .text.startup.main:0000000000001264 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1732   .text.startup.main:000000000000127a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1739   .text.startup.main:0000000000001290 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1746   .text.startup.main:00000000000012a6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1753   .text.startup.main:00000000000012bc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1758   .text.startup.main:00000000000012c2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1760   .text.startup.main:00000000000012ca .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1764   .text.startup.main:00000000000012d4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1771   .text.startup.main:00000000000012e8 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1778   .text.startup.main:00000000000012fc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1785   .text.startup.main:0000000000001310 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1792   .text.startup.main:0000000000001324 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1799   .text.startup.main:0000000000001338 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1806   .text.startup.main:000000000000134c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1813   .text.startup.main:0000000000001360 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1820   .text.startup.main:0000000000001376 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1827   .text.startup.main:000000000000138c .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1834   .text.startup.main:00000000000013a0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1841   .text.startup.main:00000000000013b6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1848   .text.startup.main:00000000000013cc .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1855   .text.startup.main:00000000000013e2 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1862   .text.startup.main:00000000000013f6 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1869   .text.startup.main:000000000000140a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1876   .text.startup.main:000000000000141e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1883   .text.startup.main:0000000000001432 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1890   .text.startup.main:0000000000001448 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1897   .text.startup.main:000000000000145e .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1904   .text.startup.main:0000000000001472 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1911   .text.startup.main:0000000000001486 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1918   .text.startup.main:000000000000149a .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1925   .text.startup.main:00000000000014ae .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1932   .text.startup.main:00000000000014c4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1939   .text.startup.main:00000000000014da .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1944   .text.startup.main:00000000000014e0 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1946   .text.startup.main:00000000000014e4 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1951   .text.startup.main:00000000000014ee .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1956   .text.startup.main:00000000000014fa .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1961   .text.startup.main:0000000000001500 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1963   .text.startup.main:0000000000001506 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1970   .sbss.temp_data:0000000000000000 temp_data
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1967   .text.startup.main:0000000000001506 .L0 
+                     .debug_frame:0000000000000000 .L0 
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:676    .rodata.main:0000000000000000 .L17
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1037   .rodata.main:0000000000000018 .L24
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:349    .text.startup.main:0000000000000350 .L5
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:758    .text.startup.main:00000000000007cc .L6
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:685    .text.startup.main:0000000000000702 .L7
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:95     .text.startup.main:000000000000008c .L2
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:100    .text.startup.main:0000000000000094 .L43
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1248   .text.startup.main:0000000000000cd6 .L37
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:642    .text.startup.main:00000000000006b0 .L14
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:996    .text.startup.main:0000000000000a80 .L15
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1942   .text.startup.main:00000000000014e0 .L9
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1756   .text.startup.main:00000000000012c2 .L44
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1959   .text.startup.main:0000000000001500 .L32
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:984    .text.startup.main:0000000000000a5a .L41
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1075   .text.startup.main:0000000000000b24 .L40
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1139   .text.startup.main:0000000000000bce .L39
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1949   .text.startup.main:00000000000014ee .L11
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1071   .text.startup.main:0000000000000b1e .L16
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1121   .text.startup.main:0000000000000ba6 .L18
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1047   .text.startup.main:0000000000000ae2 .L19
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1059   .text.startup.main:0000000000000b00 .L20
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:973    .text.startup.main:0000000000000a3e .L21
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1097   .text.startup.main:0000000000000b62 .L22
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1219   .text.startup.main:0000000000000c90 .L23
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1205   .text.startup.main:0000000000000c6e .L25
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1191   .text.startup.main:0000000000000c4c .L26
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1177   .text.startup.main:0000000000000c2a .L27
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1163   .text.startup.main:0000000000000c08 .L28
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1149   .text.startup.main:0000000000000be6 .L29
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1126   .text.startup.main:0000000000000bae .L30
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1233   .text.startup.main:0000000000000cb2 .L31
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:9812   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10542  .debug_str:000000000000028d .LASF130
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10510  .debug_str:00000000000001e6 .LASF131
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10648  .debug_str:00000000000004fb .LASF132
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10406  .debug_ranges:0000000000000000 .Ldebug_ranges0
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10412  .debug_line:0000000000000000 .Ldebug_line0
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10450  .debug_str:00000000000000d4 .LASF0
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10422  .debug_str:0000000000000025 .LASF5
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10574  .debug_str:00000000000003b9 .LASF1
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10580  .debug_str:00000000000003d5 .LASF2
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10530  .debug_str:000000000000024a .LASF3
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10468  .debug_str:000000000000012b .LASF4
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10492  .debug_str:0000000000000198 .LASF6
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10520  .debug_str:0000000000000218 .LASF7
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10448  .debug_str:00000000000000c6 .LASF8
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10434  .debug_str:000000000000006d .LASF9
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10512  .debug_str:00000000000001f4 .LASF10
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10660  .debug_str:00000000000005c8 .LASF11
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10618  .debug_str:0000000000000483 .LASF12
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10556  .debug_str:000000000000035e .LASF13
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10572  .debug_str:00000000000003a7 .LASF14
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10566  .debug_str:000000000000038d .LASF15
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10624  .debug_str:000000000000049e .LASF16
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10526  .debug_str:000000000000023a .LASF17
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10544  .debug_str:000000000000032f .LASF18
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10540  .debug_str:0000000000000287 .LASF19
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10514  .debug_str:0000000000000201 .LASF20
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10616  .debug_str:000000000000047b .LASF21
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10640  .debug_str:00000000000004dd .LASF22
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10590  .debug_str:00000000000003fd .LASF23
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10496  .debug_str:00000000000001a9 .LASF24
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10646  .debug_str:00000000000004f3 .LASF25
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10500  .debug_str:00000000000001ba .LASF30
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10636  .debug_str:00000000000004ca .LASF26
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10610  .debug_str:0000000000000466 .LASF27
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10494  .debug_str:00000000000001a3 .LASF28
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10654  .debug_str:00000000000005b3 .LASF29
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10508  .debug_str:00000000000001e1 .LASF31
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10446  .debug_str:00000000000000bd .LASF32
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10630  .debug_str:00000000000004b2 .LASF33
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10456  .debug_str:00000000000000ec .LASF34
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10684  .debug_str:0000000000000630 .LASF35
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10560  .debug_str:0000000000000371 .LASF36
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10552  .debug_str:000000000000034b .LASF37
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10656  .debug_str:00000000000005b8 .LASF38
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10582  .debug_str:00000000000003df .LASF39
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10670  .debug_str:00000000000005f2 .LASF40
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10460  .debug_str:00000000000000fb .LASF41
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10488  .debug_str:000000000000018b .LASF42
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10414  .debug_str:0000000000000000 .LASF43
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10642  .debug_str:00000000000004e5 .LASF44
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10472  .debug_str:000000000000013b .LASF45
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10562  .debug_str:000000000000037a .LASF46
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10602  .debug_str:0000000000000436 .LASF47
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10490  .debug_str:0000000000000193 .LASF48
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10584  .debug_str:00000000000003e9 .LASF49
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10454  .debug_str:00000000000000e6 .LASF50
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10416  .debug_str:000000000000000c .LASF51
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10592  .debug_str:0000000000000408 .LASF52
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10470  .debug_str:0000000000000134 .LASF53
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10522  .debug_str:000000000000022a .LASF54
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10438  .debug_str:000000000000008c .LASF55
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10462  .debug_str:0000000000000109 .LASF56
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10504  .debug_str:00000000000001d1 .LASF57
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10550  .debug_str:0000000000000344 .LASF58
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10620  .debug_str:000000000000048c .LASF59
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10674  .debug_str:000000000000060c .LASF60
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10452  .debug_str:00000000000000e0 .LASF61
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10666  .debug_str:00000000000005e4 .LASF62
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10476  .debug_str:000000000000014a .LASF63
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10480  .debug_str:000000000000015b .LASF64
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10426  .debug_str:000000000000003c .LASF65
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10546  .debug_str:0000000000000336 .LASF66
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10594  .debug_str:0000000000000410 .LASF67
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10548  .debug_str:000000000000033c .LASF68
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10612  .debug_str:000000000000046e .LASF69
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10626  .debug_str:00000000000004a6 .LASF70
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10474  .debug_str:0000000000000143 .LASF71
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10516  .debug_str:0000000000000208 .LASF72
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10498  .debug_str:00000000000001b2 .LASF73
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10600  .debug_str:0000000000000431 .LASF74
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10420  .debug_str:000000000000001a .LASF75
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10608  .debug_str:000000000000044d .LASF76
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10604  .debug_str:000000000000043b .LASF77
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10564  .debug_str:0000000000000382 .LASF78
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10606  .debug_str:0000000000000443 .LASF79
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10538  .debug_str:000000000000027f .LASF80
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10506  .debug_str:00000000000001d7 .LASF81
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10680  .debug_str:0000000000000626 .LASF82
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10570  .debug_str:000000000000039d .LASF83
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10518  .debug_str:0000000000000210 .LASF84
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10478  .debug_str:0000000000000153 .LASF85
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10576  .debug_str:00000000000003c7 .LASF86
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10532  .debug_str:000000000000025d .LASF87
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10664  .debug_str:00000000000005da .LASF88
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10466  .debug_str:0000000000000123 .LASF89
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10458  .debug_str:00000000000000f6 .LASF90
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10628  .debug_str:00000000000004ad .LASF91
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10588  .debug_str:00000000000003f6 .LASF92
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10658  .debug_str:00000000000005c2 .LASF93
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10528  .debug_str:0000000000000243 .LASF94
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10586  .debug_str:00000000000003f0 .LASF95
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10418  .debug_str:0000000000000012 .LASF96
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10614  .debug_str:0000000000000475 .LASF97
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10634  .debug_str:00000000000004c4 .LASF98
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10644  .debug_str:00000000000004ee .LASF99
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10652  .debug_str:00000000000005a6 .LASF100
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10638  .debug_str:00000000000004d0 .LASF101
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10536  .debug_str:0000000000000272 .LASF102
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10672  .debug_str:00000000000005fd .LASF103
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10502  .debug_str:00000000000001c2 .LASF104
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10596  .debug_str:0000000000000419 .LASF105
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10676  .debug_str:0000000000000613 .LASF106
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10598  .debug_str:0000000000000424 .LASF107
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10678  .debug_str:0000000000000618 .LASF108
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10444  .debug_str:00000000000000af .LASF109
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10662  .debug_str:00000000000005d0 .LASF110
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10534  .debug_str:0000000000000266 .LASF111
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10424  .debug_str:000000000000002f .LASF112
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10486  .debug_str:000000000000017d .LASF113
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10442  .debug_str:00000000000000a0 .LASF114
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10484  .debug_str:000000000000016c .LASF115
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10428  .debug_str:0000000000000042 .LASF116
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10430  .debug_str:0000000000000051 .LASF117
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10578  .debug_str:00000000000003cc .LASF118
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10558  .debug_str:000000000000036a .LASF119
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10554  .debug_str:0000000000000355 .LASF120
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10668  .debug_str:00000000000005ea .LASF121
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10440  .debug_str:0000000000000095 .LASF133
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10622  .debug_str:0000000000000492 .LASF122
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10650  .debug_str:0000000000000593 .LASF123
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10524  .debug_str:0000000000000230 .LASF124
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10682  .debug_str:000000000000062b .LASF134
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:11     .text.startup.main:0000000000000000 .LFB1
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1964   .text.startup.main:0000000000001506 .LFE1
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10432  .debug_str:0000000000000062 .LASF135
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10311  .debug_loc:0000000000000000 .LLST0
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:43     .text.startup.main:0000000000000020 .LVL1
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:54     .text.startup.main:000000000000003a .LVL2
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:65     .text.startup.main:0000000000000056 .LVL3
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:109    .text.startup.main:00000000000000aa .LVL5
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:116    .text.startup.main:00000000000000be .LVL6
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:123    .text.startup.main:00000000000000d2 .LVL7
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:130    .text.startup.main:00000000000000e6 .LVL8
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:137    .text.startup.main:00000000000000fa .LVL9
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:144    .text.startup.main:000000000000010e .LVL10
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:151    .text.startup.main:0000000000000122 .LVL11
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:158    .text.startup.main:0000000000000136 .LVL12
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:165    .text.startup.main:000000000000014a .LVL13
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:172    .text.startup.main:000000000000015e .LVL14
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:179    .text.startup.main:0000000000000172 .LVL15
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:186    .text.startup.main:0000000000000186 .LVL16
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:193    .text.startup.main:000000000000019a .LVL17
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:200    .text.startup.main:00000000000001ae .LVL18
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:207    .text.startup.main:00000000000001c2 .LVL19
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:214    .text.startup.main:00000000000001d6 .LVL20
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:221    .text.startup.main:00000000000001ea .LVL21
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:228    .text.startup.main:00000000000001fe .LVL22
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:235    .text.startup.main:0000000000000212 .LVL23
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:242    .text.startup.main:0000000000000226 .LVL24
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:249    .text.startup.main:000000000000023a .LVL25
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:256    .text.startup.main:000000000000024e .LVL26
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:263    .text.startup.main:0000000000000262 .LVL27
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:270    .text.startup.main:0000000000000276 .LVL28
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:277    .text.startup.main:000000000000028a .LVL29
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:284    .text.startup.main:000000000000029e .LVL30
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:291    .text.startup.main:00000000000002b2 .LVL31
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:298    .text.startup.main:00000000000002c6 .LVL32
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:305    .text.startup.main:00000000000002da .LVL33
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:312    .text.startup.main:00000000000002ee .LVL34
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:319    .text.startup.main:0000000000000304 .LVL35
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:326    .text.startup.main:000000000000031a .LVL36
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:333    .text.startup.main:0000000000000330 .LVL37
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:340    .text.startup.main:0000000000000346 .LVL38
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:361    .text.startup.main:000000000000036c .LVL40
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:368    .text.startup.main:000000000000037e .LVL41
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:375    .text.startup.main:0000000000000390 .LVL42
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:382    .text.startup.main:00000000000003a2 .LVL43
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:389    .text.startup.main:00000000000003b4 .LVL44
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:396    .text.startup.main:00000000000003c6 .LVL45
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:403    .text.startup.main:00000000000003dc .LVL46
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:410    .text.startup.main:00000000000003f2 .LVL47
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:417    .text.startup.main:0000000000000408 .LVL48
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:424    .text.startup.main:000000000000041e .LVL49
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:431    .text.startup.main:0000000000000434 .LVL50
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:438    .text.startup.main:0000000000000448 .LVL51
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:445    .text.startup.main:000000000000045c .LVL52
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:452    .text.startup.main:0000000000000470 .LVL53
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:459    .text.startup.main:0000000000000484 .LVL54
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:466    .text.startup.main:000000000000049a .LVL55
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:473    .text.startup.main:00000000000004b0 .LVL56
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:480    .text.startup.main:00000000000004c6 .LVL57
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:487    .text.startup.main:00000000000004dc .LVL58
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:494    .text.startup.main:00000000000004f2 .LVL59
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:501    .text.startup.main:0000000000000508 .LVL60
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:508    .text.startup.main:000000000000051c .LVL61
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:515    .text.startup.main:0000000000000530 .LVL62
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:522    .text.startup.main:0000000000000544 .LVL63
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:529    .text.startup.main:0000000000000558 .LVL64
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:536    .text.startup.main:000000000000056e .LVL65
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:543    .text.startup.main:0000000000000584 .LVL66
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:550    .text.startup.main:000000000000059a .LVL67
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:557    .text.startup.main:00000000000005b0 .LVL68
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:564    .text.startup.main:00000000000005c6 .LVL69
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:571    .text.startup.main:00000000000005dc .LVL70
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:578    .text.startup.main:00000000000005f0 .LVL71
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:585    .text.startup.main:0000000000000604 .LVL72
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:592    .text.startup.main:0000000000000618 .LVL73
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:599    .text.startup.main:000000000000062c .LVL74
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:606    .text.startup.main:0000000000000642 .LVL75
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:613    .text.startup.main:0000000000000658 .LVL76
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:620    .text.startup.main:000000000000066e .LVL77
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:627    .text.startup.main:0000000000000684 .LVL78
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:634    .text.startup.main:000000000000069a .LVL79
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:641    .text.startup.main:00000000000006b0 .LVL80
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:649    .text.startup.main:00000000000006c6 .LVL81
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:656    .text.startup.main:00000000000006dc .LVL82
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:663    .text.startup.main:00000000000006f0 .LVL83
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:697    .text.startup.main:000000000000071e .LVL85
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:704    .text.startup.main:0000000000000732 .LVL86
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:711    .text.startup.main:0000000000000746 .LVL87
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:718    .text.startup.main:000000000000075a .LVL88
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:725    .text.startup.main:0000000000000770 .LVL89
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:732    .text.startup.main:0000000000000786 .LVL90
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:739    .text.startup.main:000000000000079c .LVL91
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:746    .text.startup.main:00000000000007b2 .LVL92
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:753    .text.startup.main:00000000000007c8 .LVL93
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:765    .text.startup.main:00000000000007dc .LVL95
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:772    .text.startup.main:00000000000007f0 .LVL96
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:779    .text.startup.main:0000000000000804 .LVL97
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:786    .text.startup.main:0000000000000818 .LVL98
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:793    .text.startup.main:000000000000082c .LVL99
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:800    .text.startup.main:0000000000000840 .LVL100
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:807    .text.startup.main:0000000000000854 .LVL101
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:814    .text.startup.main:0000000000000868 .LVL102
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:821    .text.startup.main:000000000000087c .LVL103
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:828    .text.startup.main:0000000000000890 .LVL104
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:835    .text.startup.main:00000000000008a6 .LVL105
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:842    .text.startup.main:00000000000008bc .LVL106
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:849    .text.startup.main:00000000000008d2 .LVL107
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:856    .text.startup.main:00000000000008e8 .LVL108
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:863    .text.startup.main:00000000000008fc .LVL109
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:870    .text.startup.main:0000000000000910 .LVL110
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:877    .text.startup.main:0000000000000924 .LVL111
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:884    .text.startup.main:0000000000000938 .LVL112
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:891    .text.startup.main:000000000000094e .LVL113
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:898    .text.startup.main:0000000000000964 .LVL114
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:905    .text.startup.main:000000000000097a .LVL115
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:912    .text.startup.main:0000000000000990 .LVL116
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:919    .text.startup.main:00000000000009a4 .LVL117
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:926    .text.startup.main:00000000000009b8 .LVL118
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:933    .text.startup.main:00000000000009cc .LVL119
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:940    .text.startup.main:00000000000009e0 .LVL120
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:947    .text.startup.main:00000000000009f6 .LVL121
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:954    .text.startup.main:0000000000000a0c .LVL122
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:961    .text.startup.main:0000000000000a22 .LVL123
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:968    .text.startup.main:0000000000000a38 .LVL124
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:980    .text.startup.main:0000000000000a54 .LVL126
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:988    .text.startup.main:0000000000000a6a .LVL127
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:995    .text.startup.main:0000000000000a80 .LVL128
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1003   .text.startup.main:0000000000000a96 .LVL129
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1010   .text.startup.main:0000000000000aac .LVL130
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1017   .text.startup.main:0000000000000ac0 .LVL131
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1054   .text.startup.main:0000000000000af8 .LVL132
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1066   .text.startup.main:0000000000000b16 .LVL133
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1080   .text.startup.main:0000000000000b34 .LVL134
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1087   .text.startup.main:0000000000000b4a .LVL135
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1094   .text.startup.main:0000000000000b60 .LVL136
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1104   .text.startup.main:0000000000000b78 .LVL137
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1111   .text.startup.main:0000000000000b8e .LVL138
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1118   .text.startup.main:0000000000000ba4 .LVL139
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1129   .text.startup.main:0000000000000bb6 .LVL140
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1136   .text.startup.main:0000000000000bcc .LVL141
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1145   .text.startup.main:0000000000000be0 .LVL142
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1152   .text.startup.main:0000000000000bee .LVL143
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1159   .text.startup.main:0000000000000c04 .LVL144
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1166   .text.startup.main:0000000000000c10 .LVL145
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1173   .text.startup.main:0000000000000c26 .LVL146
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1180   .text.startup.main:0000000000000c32 .LVL147
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1187   .text.startup.main:0000000000000c48 .LVL148
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1194   .text.startup.main:0000000000000c54 .LVL149
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1201   .text.startup.main:0000000000000c6a .LVL150
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1208   .text.startup.main:0000000000000c76 .LVL151
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1215   .text.startup.main:0000000000000c8c .LVL152
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1222   .text.startup.main:0000000000000c98 .LVL153
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1229   .text.startup.main:0000000000000cae .LVL154
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1236   .text.startup.main:0000000000000cba .LVL155
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1243   .text.startup.main:0000000000000cd0 .LVL156
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1254   .text.startup.main:0000000000000ce4 .LVL158
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1261   .text.startup.main:0000000000000cf6 .LVL159
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1268   .text.startup.main:0000000000000d08 .LVL160
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1275   .text.startup.main:0000000000000d1a .LVL161
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1282   .text.startup.main:0000000000000d2c .LVL162
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1289   .text.startup.main:0000000000000d3e .LVL163
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1296   .text.startup.main:0000000000000d52 .LVL164
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1303   .text.startup.main:0000000000000d66 .LVL165
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1310   .text.startup.main:0000000000000d7a .LVL166
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1317   .text.startup.main:0000000000000d8e .LVL167
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1324   .text.startup.main:0000000000000da4 .LVL168
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1331   .text.startup.main:0000000000000dba .LVL169
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1338   .text.startup.main:0000000000000dce .LVL170
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1345   .text.startup.main:0000000000000de4 .LVL171
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1352   .text.startup.main:0000000000000dfa .LVL172
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1359   .text.startup.main:0000000000000e10 .LVL173
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1366   .text.startup.main:0000000000000e24 .LVL174
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1373   .text.startup.main:0000000000000e38 .LVL175
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1380   .text.startup.main:0000000000000e4c .LVL176
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1387   .text.startup.main:0000000000000e60 .LVL177
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1394   .text.startup.main:0000000000000e76 .LVL178
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1401   .text.startup.main:0000000000000e8c .LVL179
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1408   .text.startup.main:0000000000000ea2 .LVL180
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1415   .text.startup.main:0000000000000eb8 .LVL181
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1422   .text.startup.main:0000000000000ece .LVL182
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1429   .text.startup.main:0000000000000ee4 .LVL183
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1436   .text.startup.main:0000000000000efa .LVL184
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1443   .text.startup.main:0000000000000f10 .LVL185
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1450   .text.startup.main:0000000000000f26 .LVL186
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1457   .text.startup.main:0000000000000f3a .LVL187
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1464   .text.startup.main:0000000000000f50 .LVL188
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1471   .text.startup.main:0000000000000f66 .LVL189
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1478   .text.startup.main:0000000000000f7c .LVL190
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1485   .text.startup.main:0000000000000f90 .LVL191
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1492   .text.startup.main:0000000000000fa6 .LVL192
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1499   .text.startup.main:0000000000000fbc .LVL193
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1506   .text.startup.main:0000000000000fd2 .LVL194
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1513   .text.startup.main:0000000000000fe8 .LVL195
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1520   .text.startup.main:0000000000000ffe .LVL196
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1527   .text.startup.main:0000000000001014 .LVL197
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1534   .text.startup.main:0000000000001028 .LVL198
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1541   .text.startup.main:000000000000103e .LVL199
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1548   .text.startup.main:0000000000001054 .LVL200
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1555   .text.startup.main:000000000000106a .LVL201
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1562   .text.startup.main:000000000000107e .LVL202
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1569   .text.startup.main:0000000000001094 .LVL203
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1576   .text.startup.main:00000000000010aa .LVL204
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1583   .text.startup.main:00000000000010be .LVL205
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1590   .text.startup.main:00000000000010d2 .LVL206
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1597   .text.startup.main:00000000000010e6 .LVL207
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1604   .text.startup.main:00000000000010fa .LVL208
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1611   .text.startup.main:0000000000001110 .LVL209
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1618   .text.startup.main:0000000000001126 .LVL210
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1625   .text.startup.main:000000000000113c .LVL211
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1632   .text.startup.main:0000000000001152 .LVL212
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1639   .text.startup.main:0000000000001168 .LVL213
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1646   .text.startup.main:000000000000117e .LVL214
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1653   .text.startup.main:0000000000001194 .LVL215
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1660   .text.startup.main:00000000000011aa .LVL216
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1667   .text.startup.main:00000000000011be .LVL217
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1674   .text.startup.main:00000000000011d2 .LVL218
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1681   .text.startup.main:00000000000011e8 .LVL219
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1688   .text.startup.main:00000000000011fc .LVL220
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1695   .text.startup.main:0000000000001210 .LVL221
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1702   .text.startup.main:0000000000001224 .LVL222
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1709   .text.startup.main:0000000000001238 .LVL223
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1716   .text.startup.main:000000000000124e .LVL224
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1723   .text.startup.main:0000000000001264 .LVL225
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1730   .text.startup.main:000000000000127a .LVL226
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1737   .text.startup.main:0000000000001290 .LVL227
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1744   .text.startup.main:00000000000012a6 .LVL228
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1751   .text.startup.main:00000000000012bc .LVL229
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1762   .text.startup.main:00000000000012d4 .LVL231
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1769   .text.startup.main:00000000000012e8 .LVL232
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1776   .text.startup.main:00000000000012fc .LVL233
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1783   .text.startup.main:0000000000001310 .LVL234
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1790   .text.startup.main:0000000000001324 .LVL235
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1797   .text.startup.main:0000000000001338 .LVL236
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1804   .text.startup.main:000000000000134c .LVL237
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1811   .text.startup.main:0000000000001360 .LVL238
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1818   .text.startup.main:0000000000001376 .LVL239
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1825   .text.startup.main:000000000000138c .LVL240
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1832   .text.startup.main:00000000000013a0 .LVL241
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1839   .text.startup.main:00000000000013b6 .LVL242
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1846   .text.startup.main:00000000000013cc .LVL243
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1853   .text.startup.main:00000000000013e2 .LVL244
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1860   .text.startup.main:00000000000013f6 .LVL245
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1867   .text.startup.main:000000000000140a .LVL246
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1874   .text.startup.main:000000000000141e .LVL247
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1881   .text.startup.main:0000000000001432 .LVL248
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1888   .text.startup.main:0000000000001448 .LVL249
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1895   .text.startup.main:000000000000145e .LVL250
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1902   .text.startup.main:0000000000001472 .LVL251
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1909   .text.startup.main:0000000000001486 .LVL252
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1916   .text.startup.main:000000000000149a .LVL253
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1923   .text.startup.main:00000000000014ae .LVL254
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1930   .text.startup.main:00000000000014c4 .LVL255
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1937   .text.startup.main:00000000000014da .LVL256
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1948   .text.startup.main:00000000000014ee .LVL258
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1954   .text.startup.main:00000000000014fa .LVL259
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10436  .debug_str:0000000000000084 .LASF125
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10568  .debug_str:0000000000000394 .LASF126
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10632  .debug_str:00000000000004bb .LASF127
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10464  .debug_str:0000000000000111 .LASF128
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:10482  .debug_str:0000000000000163 .LASF129
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:15     .text.startup.main:0000000000000000 .LVL0
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:94     .text.startup.main:000000000000008c .LVL4
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:345    .text.startup.main:000000000000034a .LVL39
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:684    .text.startup.main:0000000000000702 .LVL84
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:757    .text.startup.main:00000000000007cc .LVL94
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:972    .text.startup.main:0000000000000a3e .LVL125
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1247   .text.startup.main:0000000000000cd6 .LVL157
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1755   .text.startup.main:00000000000012c2 .LVL230
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1941   .text.startup.main:00000000000014e0 .LVL257
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1958   .text.startup.main:0000000000001500 .LVL260
+C:\Users\admin\AppData\Local\Temp\ccSJzprV.s:1982   .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+IO_init
+TFT_init
+TFT_full
+display_char16_16
+TFT_show

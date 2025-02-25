@@ -1,0 +1,205 @@
+   1              		.file	"osp.c"
+   2              		.option nopic
+   3              		.text
+   4              	.Ltext0:
+   5              		.cfi_sections	.debug_frame
+   6              		.section	.text.OSP_READ,"ax",@progbits
+   7              		.align	1
+   8              		.globl	OSP_READ
+  10              	OSP_READ:
+  11              	.LFB1:
+  12              		.file 1 "../src/osp.c"
+   1:../src/osp.c  **** #include "osp.h"
+   2:../src/osp.c  **** #include "gpio.h"
+   3:../src/osp.c  **** unsigned char OSP_READ(){
+  13              		.loc 1 3 0
+  14              		.cfi_startproc
+   4:../src/osp.c  **** 
+   5:../src/osp.c  **** 	unsigned char temp_data;
+   6:../src/osp.c  **** 	temp_data = gpio_in_0_address;
+  15              		.loc 1 6 0
+  16 0000 A167     		li	a5,32768
+  17 0002 885B     		lw	a0,48(a5)
+  18              	.LVL0:
+   7:../src/osp.c  **** 
+   8:../src/osp.c  **** 
+   9:../src/osp.c  **** 	FIFO_CLK_0;
+  19              		.loc 1 9 0
+  20 0004 9853     		lw	a4,32(a5)
+  10:../src/osp.c  **** 	FIFO_CLK_1;
+  11:../src/osp.c  **** 
+  12:../src/osp.c  **** 	return temp_data;
+  13:../src/osp.c  **** }
+  21              		.loc 1 13 0
+  22 0006 1375F50F 		andi	a0,a0,0xff
+   9:../src/osp.c  **** 	FIFO_CLK_1;
+  23              		.loc 1 9 0
+  24 000a 1377F70B 		andi	a4,a4,191
+  25 000e 98D3     		sw	a4,32(a5)
+  10:../src/osp.c  **** 	FIFO_CLK_1;
+  26              		.loc 1 10 0
+  27 0010 9853     		lw	a4,32(a5)
+  28 0012 13670704 		ori	a4,a4,64
+  29 0016 98D3     		sw	a4,32(a5)
+  30              		.loc 1 13 0
+  31 0018 8280     		ret
+  32              		.cfi_endproc
+  33              	.LFE1:
+  35              		.text
+  36              	.Letext0:
+  37              		.file 2 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+  38              		.file 3 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+  39              		.file 4 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+  40              		.file 5 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+  41              		.file 6 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+  42              		.file 7 "c:\\users\\admin\\onedrive - stu.cdu.edu.cn\\2024fpga\\hummingbird\\hbird-eclipse_2018_09
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 osp.c
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:10     .text.OSP_READ:0000000000000000 OSP_READ
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:14     .text.OSP_READ:0000000000000000 .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:15     .text.OSP_READ:0000000000000000 .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:16     .text.OSP_READ:0000000000000000 .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:20     .text.OSP_READ:0000000000000004 .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:22     .text.OSP_READ:0000000000000006 .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:24     .text.OSP_READ:000000000000000a .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:27     .text.OSP_READ:0000000000000010 .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:31     .text.OSP_READ:0000000000000018 .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:32     .text.OSP_READ:000000000000001a .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:35     .text.OSP_READ:000000000000001a .L0 
+                     .debug_frame:0000000000000000 .L0 
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1117   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1675   .debug_str:0000000000000247 .LASF122
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1701   .debug_str:000000000000034e .LASF123
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1777   .debug_str:00000000000004a7 .LASF124
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1551   .debug_ranges:0000000000000000 .Ldebug_ranges0
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1557   .debug_line:0000000000000000 .Ldebug_line0
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1589   .debug_str:00000000000000b7 .LASF0
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1707   .debug_str:0000000000000377 .LASF1
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1713   .debug_str:0000000000000393 .LASF2
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1663   .debug_str:0000000000000204 .LASF3
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1605   .debug_str:00000000000000fc .LASF4
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1627   .debug_str:0000000000000160 .LASF10
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1655   .debug_str:00000000000001db .LASF5
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1587   .debug_str:00000000000000a9 .LASF6
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1575   .debug_str:0000000000000058 .LASF7
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1647   .debug_str:00000000000001b7 .LASF8
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1689   .debug_str:0000000000000318 .LASF9
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1705   .debug_str:0000000000000365 .LASF11
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1699   .debug_str:0000000000000347 .LASF12
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1757   .debug_str:000000000000045b .LASF13
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1791   .debug_str:000000000000057d .LASF14
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1677   .debug_str:00000000000002e9 .LASF15
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1673   .debug_str:0000000000000241 .LASF16
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1649   .debug_str:00000000000001c4 .LASF17
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1749   .debug_str:0000000000000439 .LASF18
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1751   .debug_str:0000000000000441 .LASF19
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1723   .debug_str:00000000000003bb .LASF20
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1631   .debug_str:0000000000000171 .LASF21
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1775   .debug_str:000000000000049f .LASF22
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1635   .debug_str:0000000000000182 .LASF27
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1767   .debug_str:000000000000047e .LASF23
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1743   .debug_str:0000000000000424 .LASF24
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1629   .debug_str:000000000000016b .LASF25
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1785   .debug_str:0000000000000568 .LASF26
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1643   .debug_str:00000000000001a9 .LASF28
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1585   .debug_str:00000000000000a0 .LASF29
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1763   .debug_str:000000000000046f .LASF30
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1595   .debug_str:00000000000000cf .LASF31
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1813   .debug_str:00000000000005e1 .LASF32
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1693   .debug_str:000000000000032b .LASF33
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1685   .debug_str:0000000000000305 .LASF34
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1787   .debug_str:000000000000056d .LASF35
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1715   .debug_str:000000000000039d .LASF36
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1801   .debug_str:00000000000005a8 .LASF37
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1599   .debug_str:00000000000000de .LASF38
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1623   .debug_str:0000000000000153 .LASF39
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1559   .debug_str:0000000000000000 .LASF40
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1771   .debug_str:0000000000000491 .LASF41
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1609   .debug_str:000000000000010c .LASF42
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1695   .debug_str:0000000000000334 .LASF43
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1735   .debug_str:00000000000003f4 .LASF44
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1625   .debug_str:000000000000015b .LASF45
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1717   .debug_str:00000000000003a7 .LASF46
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1593   .debug_str:00000000000000c9 .LASF47
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1561   .debug_str:000000000000000c .LASF48
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1725   .debug_str:00000000000003c6 .LASF49
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1607   .debug_str:0000000000000105 .LASF50
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1657   .debug_str:00000000000001ed .LASF51
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1577   .debug_str:000000000000006f .LASF52
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1601   .debug_str:00000000000000ec .LASF53
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1639   .debug_str:0000000000000199 .LASF54
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1683   .debug_str:00000000000002fe .LASF55
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1753   .debug_str:0000000000000449 .LASF56
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1805   .debug_str:00000000000005c2 .LASF57
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1591   .debug_str:00000000000000c3 .LASF58
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1797   .debug_str:000000000000059a .LASF59
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1613   .debug_str:000000000000011b .LASF60
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1617   .debug_str:000000000000012c .LASF61
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1569   .debug_str:0000000000000032 .LASF62
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1679   .debug_str:00000000000002f0 .LASF63
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1727   .debug_str:00000000000003ce .LASF64
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1681   .debug_str:00000000000002f6 .LASF65
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1745   .debug_str:000000000000042c .LASF66
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1759   .debug_str:0000000000000463 .LASF67
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1611   .debug_str:0000000000000114 .LASF68
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1651   .debug_str:00000000000001cb .LASF69
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1633   .debug_str:000000000000017a .LASF70
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1733   .debug_str:00000000000003ef .LASF71
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1565   .debug_str:000000000000001a .LASF72
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1741   .debug_str:000000000000040b .LASF73
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1737   .debug_str:00000000000003f9 .LASF74
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1697   .debug_str:000000000000033c .LASF75
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1739   .debug_str:0000000000000401 .LASF76
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1671   .debug_str:0000000000000239 .LASF77
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1641   .debug_str:000000000000019f .LASF78
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1811   .debug_str:00000000000005dc .LASF79
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1703   .debug_str:000000000000035b .LASF80
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1653   .debug_str:00000000000001d3 .LASF81
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1615   .debug_str:0000000000000124 .LASF82
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1709   .debug_str:0000000000000385 .LASF83
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1665   .debug_str:0000000000000217 .LASF84
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1795   .debug_str:0000000000000590 .LASF85
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1603   .debug_str:00000000000000f4 .LASF86
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1597   .debug_str:00000000000000d9 .LASF87
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1761   .debug_str:000000000000046a .LASF88
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1721   .debug_str:00000000000003b4 .LASF89
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1789   .debug_str:0000000000000577 .LASF90
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1661   .debug_str:00000000000001fd .LASF91
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1719   .debug_str:00000000000003ae .LASF92
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1563   .debug_str:0000000000000012 .LASF93
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1747   .debug_str:0000000000000433 .LASF94
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1765   .debug_str:0000000000000478 .LASF95
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1773   .debug_str:000000000000049a .LASF96
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1783   .debug_str:000000000000055b .LASF97
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1769   .debug_str:0000000000000484 .LASF98
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1669   .debug_str:000000000000022c .LASF99
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1803   .debug_str:00000000000005b3 .LASF100
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1637   .debug_str:000000000000018a .LASF101
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1729   .debug_str:00000000000003d7 .LASF102
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1807   .debug_str:00000000000005c9 .LASF103
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1731   .debug_str:00000000000003e2 .LASF104
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1809   .debug_str:00000000000005ce .LASF105
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1583   .debug_str:0000000000000092 .LASF106
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1793   .debug_str:0000000000000586 .LASF107
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1667   .debug_str:0000000000000220 .LASF108
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1567   .debug_str:0000000000000025 .LASF109
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1621   .debug_str:0000000000000145 .LASF110
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1581   .debug_str:0000000000000083 .LASF111
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1619   .debug_str:0000000000000134 .LASF112
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1571   .debug_str:0000000000000038 .LASF113
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1573   .debug_str:0000000000000047 .LASF114
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1711   .debug_str:000000000000038a .LASF115
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1691   .debug_str:0000000000000324 .LASF116
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1687   .debug_str:000000000000030f .LASF117
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1799   .debug_str:00000000000005a0 .LASF118
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1579   .debug_str:0000000000000078 .LASF125
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1755   .debug_str:000000000000044f .LASF119
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1779   .debug_str:000000000000053f .LASF120
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1781   .debug_str:0000000000000552 .LASF121
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1645   .debug_str:00000000000001ae .LASF126
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:11     .text.OSP_READ:0000000000000000 .LFB1
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:33     .text.OSP_READ:000000000000001a .LFE1
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:1659   .debug_str:00000000000001f3 .LASF127
+C:\Users\admin\AppData\Local\Temp\ccBA7m1Z.s:44     .debug_info:0000000000000000 .Ldebug_info0
+
+NO UNDEFINED SYMBOLS

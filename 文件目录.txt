@@ -1,0 +1,16 @@
+﻿pgr_PICORV32设计实例目录结构图：
+-hardware
+    ├─bench                           //仿真test bench  
+    ├─docs                            //设计文档、PicoRV32 README
+    ├─ip                              //设计调用相关IP   
+    ├─pnr                             //工程目录                   
+    │  ├─generate_bitstream           //.sbit
+    │  ├─ipcore                       //IP中用到的IP
+    │  ├─source                       //fdc文件
+    │  ├─picorv32.pds                 //工程文件
+    │  ├─ram.hex                      //机器码hex文件
+    ├─simulation                      //仿真工程目录
+    ├─src                             //主体代码
+
+├─software                        //Eclipse,JAVA,Python软件压缩包
+-matlab                             //上位机程序
